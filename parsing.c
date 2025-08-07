@@ -47,23 +47,44 @@ int count_direction(char *str)
 
 int valid_map(char *str)
 {
-    printf("%s\n", str);
+    int i = 0;
     int len = ft_strlen(str);
-    if (str[0] != '1' && str[len] != '1')
-        return (0);
-    while (*str)
+    if (str[0] != '1' && str[len - 1] != '1')
+        return (puts("error"), 0);
+    while (str[i])
     {
-        if (*str != '1' && *str != '0' && *str != 'N' && *str != 'E' && *str != 'S' && *str != 'W' && *str != ' ')
+        if (str[i] != '1' && str[i] != '0' && str[i] != 'N' && str[i] != 'E' && str[i] != 'S' && str[i] != 'W' && str[i] != ' ')
             return (0);
-        ++str;
+        ++i;
     }
     return (1);
 }
 
+char    **fill_map(char *str, char **map, int *height)
+{
+    char    **new_map;
+    int     i;
+
+    new_map = malloc(sizeof(char *) * ((*height) + 2));
+    if (!new_map)
+        return (NULL);
+    i = 0;
+    while (i < (*height))
+    {
+        new_map[i] = map[i];
+        ++i;
+    }
+    ++(*height);
+    new_map[i] = ft_strdup(str);
+    new_map[++i] = NULL;
+    free(map);
+    return (new_map);
+}
+
 void    parse_map(char *str, t_info *info)
 {
-    if (!valid_map(str))
-        return ;
+    if (valid_map(str))
+        info->map = fill_map(str, info->map, &info->height);
 }
 
 
@@ -149,5 +170,12 @@ int main(int ac, char **av)
     printf("%d\n%d\n%d\n", info.cfloor[0], info.cfloor[1], info.cfloor[2]);
     printf("%d\n%d\n%d\n", info.cceiling[0], info.cceiling[1], info.cceiling[2]);
     printf("%s\n%s\n%s\n%s\n", info.east, info.north, info.south, info.west);
+    int i = 0;
+    while (info.map[i])
+    {
+        printf("%s\n", info.map[i]);
+        ++i;
+    }
+    
     return (0);
 }

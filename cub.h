@@ -31,6 +31,7 @@ void	*ft_memset(void *b, int c, size_t len);
 typedef struct s_info
 {
     char **map;
+    int  height;
     char *north;
     char *east;
     char *west;
