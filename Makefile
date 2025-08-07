@@ -5,9 +5,11 @@ HEADER 	=	cub.h
 
 CFLAGS 	= 	-Wall -Wextra -Werror
 
-SRC 	=	get_next_line.c \ 
+SRC 	=	get_next_line.c \
 			get_next_line_utils.c \
 			parsing.c \
+			split.c \
+			utils.c \
 
 OBJ 	= 	${SRC:.c=.o}
 
@@ -18,7 +20,7 @@ ${NAME} : ${OBJ}
 	 ${CC} ${OBJ} $(CFLAGS) -o ${NAME} 
 
 %.o : %.c $(HEADER)
-	 ${CC} $(CFLAGS) -c $< -o $@
+	 ${CC}  -c $< -o $@
 	
 clean :
 	@rm -f ${OBJ}

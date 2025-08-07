@@ -6,9 +6,10 @@
 #include <stdlib.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <string.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
+#  define BUFFER_SIZE 42
 # endif
 
 char	*get_next_line(int fd);
@@ -19,10 +20,12 @@ char	*trim_to_next_line(char *line);
 char	*ft_strdup(char *s);
 void	ft_strcopy(char *dst, char *src);
 void	free_str(char **str);
-int	    ft_strncmp(const char *s1, const char *s2, size_t n);
+int	    ft_strncmp(char *s1, char *s2, int n);
 char	**ft_split(char const *s, char c);
 void	ft_free(char **tab);
-int     ft_atoi(const char *str);
+int     ft_atoi(char *str);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
+void	*ft_memset(void *b, int c, size_t len);
 
 
 typedef struct s_info
@@ -32,8 +35,8 @@ typedef struct s_info
     char *east;
     char *west;
     char *south;
-    int **cfloor;
-    int **cceiling;
+    int cfloor[3];
+    int cceiling[3];
 } t_info;
 
 

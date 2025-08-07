@@ -66,8 +66,8 @@ char	*extract_line(char *line)
 		result[j] = line[j];
 		j++;
 	}
-	result[i - 1] = '\n';
-	result[i] = '\0';
+	// result[i - 1] = '\n';
+	result[i - 1] = '\0';
 	return (result);
 }
 

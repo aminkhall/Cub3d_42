@@ -23,7 +23,7 @@ int is_valid(char *str)
     return (1);
 }
 
-int	ft_atoi(const char *str)
+int	ft_atoi(char *str)
 {
 	int		sign;
 	long	num;
@@ -31,28 +31,26 @@ int	ft_atoi(const char *str)
 	sign = 1;
 	num = 0;
     if (!is_valid(str))
-        exit(EXIT_FAILURE);
+        return (-1);
 	while (*str && ft_isdigit(*str))
 	{
 		num = num * 10 + (*str - '0');
         if (num > 255)
-            exit(EXIT_FAILURE);
+            return (-1);
 		str++;
 	}
 	return (num * sign);
 }
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+int	ft_strncmp(char *s1, char *s2, int n)
 {
-	size_t	i;
+	int	i;
 
 	if (!n)
 		return (0);
 	i = 0;
-	while (s1[i] == s2[i] && i < n - 1 && s1[i] && s2[i])
-	{
+	while (s1[i] && s2[i] && s1[i] == s2[i] && i < n - 1)
 		i++;
-	}
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
@@ -64,4 +62,27 @@ void	ft_free(char **tab)
 	while (tab[i])
 		free(tab[i++]);
 	free(tab);
+}
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t	i;
+
+	i = ft_strlen(src);
+	if (dstsize <= 0)
+		return (i);
+	while (*src && --dstsize)
+		*dst++ = *src++;
+	*dst = '\0';
+	return (i);
+}
+void	*ft_memset(void *b, int c, size_t len)
+{
+	unsigned char	n;
+	unsigned char	*s;
+
+	n = (unsigned char) c;
+	s = (unsigned char *) b;
+	while (len--)
+		*s++ = n;
+	return (b);
 }
