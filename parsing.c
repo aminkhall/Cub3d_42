@@ -4,24 +4,24 @@ int is_texter(char *str)
 {
     char **line = ft_split(str, ' ');
     if (!ft_strncmp(line[0], "NO", 3))
-        return (1);
+        return (ft_free(line), 1);
     else if (!ft_strncmp(line[0], "SO", 3))
-        return (1);
+        return (ft_free(line), 1);
     else if (!ft_strncmp(line[0], "WE", 3))
-        return (1);
+        return (ft_free(line), 1);
     else if (!ft_strncmp(line[0], "EA", 3))
-        return (1);
-    return (0);
+        return (ft_free(line), 1);
+    return (ft_free(line), 0);
 }
 
 int is_color(char *str)
 {
     char **line = ft_split(str, ' ');
     if (!ft_strncmp(line[0], "F", 2))
-        return (1);
+        return (ft_free(line), 1);
     else if (!ft_strncmp(line[0], "C", 2))
-        return (1);
-    return (0);
+        return (ft_free(line), 1);
+    return (ft_free(line), 0);
 }
 
 int is_map(char *str)
@@ -137,6 +137,32 @@ void    parse_color(char *str, t_info *info)
     ft_free(line);
 }
 
+int check_map(t_info *info, int height)
+{
+    int i;
+
+    while (info->map[height][i])
+    {
+        if (info->map[height][i] != '1' && info->map[height][i] != ' ')
+            return (0);
+        ++i;
+    }
+    return (1);
+}
+void    ft_clean(t_info *info)
+{
+    if (info->east)
+        free(info->east);
+    if (info->north)
+        free(info->north);
+    if (info->south)
+        free(info->south);
+    if (info->west)
+        free(info->west);
+    if (info->map)
+        ft_free(info->map);
+}
+
 int parsing(char *filename, t_info *info)
 {
     char *line;
@@ -154,15 +180,24 @@ int parsing(char *filename, t_info *info)
         else if (is_map(line))
             parse_map(line, info);
         else
-            return (0);
+            return (free(line), ft_clean(info), 0);
         free(line);
     }
     close(fd);
+    if (!check_map(info, 0) || !check_map(info, info->height - 1))
+        return (ft_clean(info), 0);
     return (1);
+}
+
+
+void ff()
+{
+    system("leaks cub");
 }
 
 int main(int ac, char **av)
 {
+    atexit(ff);
     t_info info;
     ft_memset(&info, 0, sizeof(t_info));
     if (!parsing("text.cub", &info))
@@ -176,6 +211,6 @@ int main(int ac, char **av)
         printf("%s\n", info.map[i]);
         ++i;
     }
-    
+    ft_clean(&info);
     return (0);
 }
