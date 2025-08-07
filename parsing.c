@@ -94,15 +94,25 @@ void    parse_texter(char *str, t_info *info)
 
     line = ft_split(str, ' ');
     if (!line || !line[0] || !line[1])
+    {
+        ft_free(line);
         return ;
-    if (!ft_strncmp(line[0], "NO", 3))
+    }
+    if (!ft_strncmp(line[0], "NO", 3) && !info->north)
         info->north = ft_strdup(line[1]);
-    else if (!ft_strncmp(line[0], "SO", 3))
+    else if (!ft_strncmp(line[0], "SO", 3) && !info->south)
         info->south = ft_strdup(line[1]);
-    else if (!ft_strncmp(line[0], "WE", 3))
+    else if (!ft_strncmp(line[0], "WE", 3) && !info->west)
         info->west = ft_strdup(line[1]);
-    else if (!ft_strncmp(line[0], "EA", 3))
+    else if (!ft_strncmp(line[0], "EA", 3) && !info->east)
         info->east = ft_strdup(line[1]);
+    else
+    {
+        printf("Error\n");
+        ft_free(line);
+        ft_clean(info);
+        exit(1);
+    }
     ft_free(line);
     return ;
 }
@@ -120,6 +130,8 @@ int get_color(char *str, int rgb[3])
     rgb[1] = ft_atoi(color[1]);
     rgb[2] = ft_atoi(color[2]);
     ft_free(color);
+    if (rgb[0] < 0 || rgb[1] < 0 || rgb[2] < 0)
+        return (-1);
     return (0);
 }
 
@@ -134,6 +146,13 @@ void    parse_color(char *str, t_info *info)
         get_color(line[1], info->cfloor);
     else if (!ft_strncmp(line[0], "C", 2))
         get_color(line[1], info->cceiling);
+    if (get_color(line[1], info->cceiling) < 0 || get_color(line[1], info->cceiling) < 0)
+    {
+        printf("Invalid Values\n");
+        ft_free(line);
+        ft_clean(info);
+        exit(1);
+    }
     ft_free(line);
 }
 
@@ -163,6 +182,35 @@ void    ft_clean(t_info *info)
         ft_free(info->map);
 }
 
+int dup_texter(char *texter, t_info *info)
+{
+    int count;
+
+    count = 0;
+    if (!ft_strncmp(texter, info->east, ft_strlen(texter)))
+        ++count;
+    if (!ft_strncmp(texter, info->north, ft_strlen(texter)))
+        ++count;
+    if (!ft_strncmp(texter, info->south, ft_strlen(texter)))
+        ++count;
+    if (!ft_strncmp(texter, info->west, ft_strlen(texter)))
+        ++count;
+    return (count == 1);
+}
+
+int check_texter(t_info *info)
+{
+    if (!dup_texter(info->east, info))
+        return (0);
+    else if (!dup_texter(info->north, info))
+        return (0);
+    else if (!dup_texter(info->south, info))
+        return (0);
+    else if (!dup_texter(info->west, info))
+        return (0);
+    return (1);
+}
+
 int parsing(char *filename, t_info *info)
 {
     char *line;
@@ -185,6 +233,8 @@ int parsing(char *filename, t_info *info)
     }
     close(fd);
     if (!check_map(info, 0) || !check_map(info, info->height - 1))
+        return (ft_clean(info), 0);
+    if (!check_texter(info))
         return (ft_clean(info), 0);
     return (1);
 }

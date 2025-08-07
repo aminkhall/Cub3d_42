@@ -12,6 +12,18 @@
 #  define BUFFER_SIZE 42
 # endif
 
+typedef struct s_info
+{
+    char **map;
+    int  height;
+    char *north;
+    char *east;
+    char *west;
+    char *south;
+    int cfloor[3];
+    int cceiling[3];
+} t_info;
+
 char	*get_next_line(int fd);
 char	*extract_line(char *line);
 char	*ft_strjoin(char *s1, char *s2);
@@ -26,19 +38,7 @@ void	ft_free(char **tab);
 int     ft_atoi(char *str);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 void	*ft_memset(void *b, int c, size_t len);
-
-
-typedef struct s_info
-{
-    char **map;
-    int  height;
-    char *north;
-    char *east;
-    char *west;
-    char *south;
-    int cfloor[3];
-    int cceiling[3];
-} t_info;
+void    ft_clean(t_info *info);
 
 
 #endif
