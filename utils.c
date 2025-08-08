@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/08 20:14:10 by mkhallou          #+#    #+#             */
+/*   Updated: 2025/08/08 20:36:08 by mkhallou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub.h"
 
 int	ft_isdigit(int c)
@@ -85,4 +97,20 @@ void	*ft_memset(void *b, int c, size_t len)
 	while (len--)
 		*s++ = n;
 	return (b);
+}
+
+void    ft_clean(t_info *info)
+{
+	if (!info)
+		return ;
+    if (info->east)
+        free(info->east);
+    if (info->north)
+        free(info->north);
+    if (info->south)
+        free(info->south);
+    if (info->west)
+        free(info->west);
+    if (info->map)
+        ft_free(info->map);
 }

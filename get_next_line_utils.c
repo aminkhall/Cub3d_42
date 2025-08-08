@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/08 20:14:03 by mkhallou          #+#    #+#             */
+/*   Updated: 2025/08/08 21:09:38 by mkhallou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub.h"
 
 char	*ft_strjoin(char *s1, char *s2)
@@ -56,7 +68,6 @@ char	*extract_line(char *line)
 		i++;
 	if (line[i] == '\0')
 		return (ft_strdup(line));
-	i++;
 	result = malloc(i + 1);
 	if (!result)
 		return (NULL);
@@ -66,8 +77,7 @@ char	*extract_line(char *line)
 		result[j] = line[j];
 		j++;
 	}
-	// result[i - 1] = '\n';
-	result[i - 1] = '\0';
+	result[j] = '\0';
 	return (result);
 }
 

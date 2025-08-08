@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/08 20:14:00 by mkhallou          #+#    #+#             */
+/*   Updated: 2025/08/08 20:20:36 by mkhallou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CUB_H
 #define CUB_H
 
@@ -39,6 +51,14 @@ int     ft_atoi(char *str);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 void	*ft_memset(void *b, int c, size_t len);
 void    ft_clean(t_info *info);
-
+void    parse_color(char *str, t_info *info);
+int     is_color(char *str);
+int     is_map(char *str);
+int     check_map(t_info *info, int height);
+int     count_direction(char **str);
+void    parse_map(char *str, t_info *info);
+int     is_texter(char *str);
+int     check_texter(t_info *info);
+void    parse_texter(char *str, t_info *info);
 
 #endif

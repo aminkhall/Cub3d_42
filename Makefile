@@ -7,6 +7,9 @@ CFLAGS 	= 	-Wall -Wextra -Werror
 
 SRC 	=	get_next_line.c \
 			get_next_line_utils.c \
+			parse_color.c \
+			parse_map.c \
+			parse_texter.c \
 			parsing.c \
 			split.c \
 			utils.c \
