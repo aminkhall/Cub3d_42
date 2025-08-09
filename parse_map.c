@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 19:47:45 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:26:31 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ int	check_map(t_info *info, int height)
 {
 	int	i;
 
+	if (!info->map)
+		return (0);
 	i = 0;
 	while (info->map[height][i])
 	{
