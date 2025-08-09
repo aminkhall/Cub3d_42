@@ -13,6 +13,7 @@ SRC 	=	get_next_line.c \
 			parsing.c \
 			split.c \
 			utils.c \
+			utils2.c \
 
 OBJ 	= 	${SRC:.c=.o}
 

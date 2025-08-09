@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 19:38:33 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/09 19:47:45 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,5 @@ void	parse_map(char *str, t_info *info)
 	if (valid_map(str))
 		info->map = fill_map(str, info->map, &info->height);
 	else
-	{
-		printf("Invalid Map\n");
-		ft_clean(info);
-		close(info->fd);
-		exit(1);
-	}
+		error_handler("Invalid Map", info);
 }

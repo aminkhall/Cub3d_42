@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:00 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 19:35:54 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/09 19:44:10 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,6 @@ void		parse_map(char *str, t_info *info);
 int			is_texter(char *str);
 int			check_texter(t_info *info);
 void		parse_texter(char *str, t_info *info);
+void		error_handler(char *str, t_info *info);
 
 #endif
