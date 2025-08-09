@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 19:37:49 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:20:18 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ int	parsing(char *filename, t_info *info)
 	}
 	close(info->fd);
 	if (!check_map(info, 0) || !check_map(info, info->height - 1)
-		|| count_direction(info->map) > 1)
-		return (puts("Invalid Map"), ft_clean(info), 0);
+		|| count_direction(info->map) > 1
+        || info->n_cceiling > 1 || info->n_cfloor > 1)
+		return (ft_clean(info), 0);
 	return (1);
 }
 

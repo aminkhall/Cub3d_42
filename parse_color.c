@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:13:52 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 19:47:09 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:16:57 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,18 @@ void	parse_color(char *str, t_info *info)
 
 	line = ft_split(str, ' ');
 	if (!line || !line[0] || !line[1] || line[2])
-	{
-		error_handler("Color Invalid", info);
-		ft_free(line);
-	}
+		(ft_free(line), error_handler("Color Invalid", info));
 	if (!ft_strncmp(line[0], "F", 2))
 	{
+		++info->n_cfloor;
 		if (get_color(line[1], info->cfloor) < 0)
-		{
-			error_handler("Invalid Floor Values", info);
-			ft_free(line);
-		}
+			(ft_free(line), error_handler("Invalid Floor Values", info));
 	}
 	else if (!ft_strncmp(line[0], "C", 2))
 	{
+		++info->n_cceiling;
 		if (get_color(line[1], info->cceiling) < 0)
-		{
-			error_handler("Invalid Ceiling  Values", info);
-			ft_free(line);
-		}
+			(ft_free(line), error_handler("Invalid Ceiling  Values", info));
 	}
 	ft_free(line);
 }

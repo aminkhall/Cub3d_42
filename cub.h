@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:00 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 19:44:10 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/09 20:16:04 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ typedef struct s_info
 	char	*east;
 	char	*west;
 	char	*south;
+    int     n_cfloor;
+    int     n_cceiling;
 	int		cfloor[3];
 	int		cceiling[3];
 }			t_info;
