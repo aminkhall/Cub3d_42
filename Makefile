@@ -3,7 +3,7 @@ CC 		=	cc
 
 HEADER 	=	cub.h
 
-CFLAGS 	= 	-Wall -Wextra -Werror
+CFLAGS 	= 	 -fsanitize=address #-Wall -Wextra -Werror
 
 SRC 	=	get_next_line.c \
 			get_next_line_utils.c \
@@ -23,7 +23,7 @@ ${NAME} : ${OBJ}
 	 ${CC} ${OBJ} $(CFLAGS) -o ${NAME} 
 
 %.o : %.c $(HEADER)
-	 ${CC}  -c $< -o $@
+	 ${CC} $(CFLAGS)  -c $< -o $@
 	
 clean :
 	@rm -f ${OBJ}

@@ -45,7 +45,7 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (NULL);
 	count_word = ft_count_word(s, c);
-	tab = (char **) malloc(sizeof(char *) * (count_word + 1));
+	tab = (char **)malloc(sizeof(char *) * (count_word + 1));
 	if (!tab)
 		return (NULL);
 	i = 0;
@@ -54,7 +54,7 @@ char	**ft_split(char const *s, char c)
 		while (*s == c && *s)
 			s++;
 		len = ft_strlen_sep(s, c);
-		tab[i] = (char *) malloc(sizeof(char) * (len + 1));
+		tab[i] = (char *)malloc(sizeof(char) * (len + 1));
 		if (!tab[i])
 			return (ft_free(tab), NULL);
 		ft_strlcpy(tab[i++], s, len + 1);

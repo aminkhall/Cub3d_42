@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:10 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/08 20:36:08 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/09 19:36:31 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,20 @@ int	ft_isdigit(int c)
 	return (0);
 }
 
-int is_valid(char *str)
+int	is_valid(char *str)
 {
-    int i;
+	int	i;
 
-    if (!str)
-        return (0);
-    i = 0;
-    while (str[i])
-    {
-        if (!ft_isdigit(str[i]))
-            return (0);
-        ++i;
-    }
-    return (1);
+	if (!str)
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		++i;
+	}
+	return (1);
 }
 
 int	ft_atoi(char *str)
@@ -42,13 +42,13 @@ int	ft_atoi(char *str)
 
 	sign = 1;
 	num = 0;
-    if (!is_valid(str))
-        return (-1);
+	if (!is_valid(str))
+		return (-1);
 	while (*str && ft_isdigit(*str))
 	{
 		num = num * 10 + (*str - '0');
-        if (num > 255)
-            return (-1);
+		if (num > 255)
+			return (-1);
 		str++;
 	}
 	return (num * sign);
@@ -92,25 +92,25 @@ void	*ft_memset(void *b, int c, size_t len)
 	unsigned char	n;
 	unsigned char	*s;
 
-	n = (unsigned char) c;
-	s = (unsigned char *) b;
+	n = (unsigned char)c;
+	s = (unsigned char *)b;
 	while (len--)
 		*s++ = n;
 	return (b);
 }
 
-void    ft_clean(t_info *info)
+void	ft_clean(t_info *info)
 {
 	if (!info)
 		return ;
-    if (info->east)
-        free(info->east);
-    if (info->north)
-        free(info->north);
-    if (info->south)
-        free(info->south);
-    if (info->west)
-        free(info->west);
-    if (info->map)
-        ft_free(info->map);
+	if (info->east)
+		free(info->east);
+	if (info->north)
+		free(info->north);
+	if (info->south)
+		free(info->south);
+	if (info->west)
+		free(info->west);
+	if (info->map)
+		ft_free(info->map);
 }
