@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:13:55 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 19:36:21 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/09 19:38:49 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	parse_texter(char *str, t_info *info)
 		printf("Texter Invalid\n");
 		ft_free(line);
 		ft_clean(info);
+		close(info->fd);
 		exit(1);
 	}
 	if (!ft_strncmp(line[0], "NO", 3) && !info->north)
@@ -82,6 +83,7 @@ void	parse_texter(char *str, t_info *info)
 		printf("Dup Texter\n");
 		ft_free(line);
 		ft_clean(info);
+		close(info->fd);
 		exit(1);
 	}
 	ft_free(line);
