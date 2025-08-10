@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:00 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/10 14:15:20 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:03:07 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct s_info
 char		*get_next_line(int fd);
 char		*extract_line(char *line);
 char		*ft_strjoin(char *s1, char *s2);
-size_t		ft_strlen(const char *s);
+size_t		ft_strlen(char *s);
 char		*trim_to_next_line(char *line);
 char		*ft_strdup(char *s);
 void		ft_strcopy(char *dst, char *src);
@@ -64,5 +64,7 @@ int			is_texter(char *str);
 int			check_texter(t_info *info);
 void		parse_texter(char *str, t_info *info);
 void		error_handler(char *str, t_info *info);
+int			check_space(char **info);
+void		change_space(char **map);
 
 #endif

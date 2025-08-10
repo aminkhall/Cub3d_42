@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 20:26:31 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:08:57 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ int	valid_map(char *str)
 		++i;
 	while (len && str[len - 1] == ' ')
 		--len;
-	if (str[i] != '1' && str[len] != '1')
-		return (puts("error"), 0);
+	if (str[i] != '1' || str[len - 1] != '1')
+		return (puts("invalid map"), 0);
 	while (str[i])
 	{
 		if (str[i] != '1' && str[i] != '0' && str[i] != 'N' && str[i] != 'E'
@@ -87,6 +87,35 @@ int	check_map(t_info *info, int height)
 	return (1);
 }
 
+int	check_space(char **map)
+{
+	int	i;
+	int	j;
+
+	if (!map)
+		return (0);
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == '0')
+			{
+				if (ft_strlen(map[i - 1]) >= j && map[i - 1][j] == ' ')
+					return (0);
+				if (ft_strlen(map[i + 1]) >= j && map[i + 1][j] == ' ')
+					return (0);
+				if (map[i][j + 1] == ' ' || map[i][j - 1] == ' ')
+					return (0);
+			}
+			++j;
+		}
+		++i;
+	}
+	return (1);
+}
+
 char	**fill_map(char *str, char **map, int *height)
 {
 	char	**new_map;
@@ -106,6 +135,27 @@ char	**fill_map(char *str, char **map, int *height)
 	new_map[++i] = NULL;
 	free(map);
 	return (new_map);
+}
+
+void	change_space(char **map)
+{
+	int	i;
+	int	j;
+
+	if (!map)
+		return ;
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == ' ')
+				map[i][j] = '1';
+			++j;
+		}
+		++i;
+	}
 }
 
 void	parse_map(char *str, t_info *info)

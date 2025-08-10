@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 19:41:18 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/10 14:17:00 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/10 15:24:20 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
 	size_t	i;
 
-	i = ft_strlen(src);
+	i = ft_strlen((char *)src);
 	if (dstsize <= 0)
 		return (i);
 	while (*src && --dstsize)
