@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/10 14:15:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/10 14:15:07 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:18:51 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d.h"
 
 static int	ft_strlen_sep(char const *s, char c)
 {

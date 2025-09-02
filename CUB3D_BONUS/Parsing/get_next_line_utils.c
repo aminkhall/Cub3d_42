@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/10 15:22:46 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/30 16:03:55 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d_bonus.h"
 
 char	*ft_strjoin(char *s1, char *s2)
 {
@@ -43,9 +43,9 @@ char	*ft_strdup(char *s)
 	return (copy);
 }
 
-size_t	ft_strlen(char *s)
+int	ft_strlen(char *s)
 {
-	size_t	len;
+	int	len;
 
 	len = 0;
 	if (!s)

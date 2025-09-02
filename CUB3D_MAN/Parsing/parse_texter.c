@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:13:55 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/10 14:15:31 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:18:46 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d.h"
 
 int	is_texter(char *str)
 {

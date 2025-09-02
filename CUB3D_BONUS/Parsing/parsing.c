@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/10 15:58:21 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/30 16:04:21 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d_bonus.h"
 
 int	parsing(char *filename, t_info *info)
 {
@@ -33,9 +33,9 @@ int	parsing(char *filename, t_info *info)
 	}
 	close(info->fd);
 	if (!check_map(info, 0) || !check_map(info, info->height - 1)
-		|| count_direction(info->map) > 1 || info->n_cceiling != 1
+		|| count_direction(info->map, &info->direc) > 1 || info->n_cceiling != 1
 		|| info->n_cfloor != 1 || !info->east || !info->north
-		|| !info->south || !info->west || !check_space(info->map))
+		|| !info->south || !info->west || !check_space(info->map, info->direc))
 		return (puts("invalid input"), ft_clean(info), 0);
 	change_space(info->map);
 	return (1);
@@ -47,42 +47,44 @@ int	valid_filename(char *str)
 
 	if (!str || !(*str))
 		return (0);
-	i = 0;
-	while (str[i] && str[i] != '.')
-		++i;
+	i = ft_strlen(str);
+	if (!i)
+		return (0);
+	while (i && str[i] != '.')
+		--i;
 	if (!ft_strncmp(str + i, ".cub", 5))
 		return (1);
 	return (0);
 }
 
-void	ff(void)
-{
-	system("leaks cub");
-}
+// void	ff(void)
+// {
+// 	system("leaks cub");
+// }
 
-int	main(int ac, char **av)
-{
-	t_info	info;
-	int		i;
+// int	main(int ac, char **av)
+// {
+// 	t_info	info;
+// 	int		i;
 
-	// atexit(ff);
-	ft_memset(&info, 0, sizeof(t_info));
-	if (ac != 2)
-		return (1);
-	if (!valid_filename(av[1]))
-		return (1);
-	if (!parsing(av[1], &info))
-		return (1);
-	printf("%s\n%s\n%s\n%s\n", info.east, info.north, info.south, info.west);
-	printf("%d\n%d\n%d\n", info.cfloor[0], info.cfloor[1], info.cfloor[2]);
-	printf("%d\n%d\n%d\n", info.cceiling[0], info.cceiling[1],
-		info.cceiling[2]);
-	i = 0;
-	while (info.map[i])
-	{
-		printf("%s\n", info.map[i]);
-		++i;
-	}
-	ft_clean(&info);
-	return (0);
-}
+// 	// atexit(ff);
+// 	ft_memset(&info, 0, sizeof(t_info));
+// 	if (ac != 2)
+// 		return (1);
+// 	if (!valid_filename(av[1]))
+// 		return (1);
+// 	if (!parsing(av[1], &info))
+// 		return (1);
+// 	printf("%s\n%s\n%s\n%s\n", info.east, info.north, info.south, info.west);
+// 	printf("%d\n%d\n%d\n", info.cfloor[0], info.cfloor[1], info.cfloor[2]);
+// 	printf("%d\n%d\n%d\n", info.cceiling[0], info.cceiling[1],
+// 		info.cceiling[2]);
+// 	i = 0;
+// 	while (info.map[i])
+// 	{
+// 		printf("%s\n", info.map[i]);
+// 		++i;
+// 	}
+// 	ft_clean(&info);
+// 	return (0);
+// }

@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 19:41:18 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/10 15:24:20 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/30 16:04:32 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d_bonus.h"
 
 void	ft_free(char **tab)
 {

@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/08 20:14:07 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:18:12 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d.h"
 
 void	ft_strcopy(char *dst, char *src)
 {

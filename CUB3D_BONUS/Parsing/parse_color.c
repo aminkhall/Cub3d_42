@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:13:52 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 20:16:57 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/30 16:04:04 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d_bonus.h"
 
 int	is_color(char *str)
 {

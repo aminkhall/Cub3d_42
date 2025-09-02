@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/10 16:08:57 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/30 16:04:14 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d_bonus.h"
 
 int	is_map(char *str)
 {
@@ -21,7 +21,7 @@ int	is_map(char *str)
 	return (0);
 }
 
-int	count_direction(char **str)
+int	count_direction(char **str, char *dirc)
 {
 	int	count;
 	int	i;
@@ -36,7 +36,10 @@ int	count_direction(char **str)
 		{
 			if (str[i][j] == 'N' || str[i][j] == 'E' || str[i][j] == 'S'
 				|| str[i][j] == 'W')
+			{
+				
 				++count;
+			}
 			++j;
 		}
 		if (count > 1)
@@ -87,7 +90,7 @@ int	check_map(t_info *info, int height)
 	return (1);
 }
 
-int	check_space(char **map)
+int	check_space(char **map, char dirc)
 {
 	int	i;
 	int	j;
@@ -100,7 +103,7 @@ int	check_space(char **map)
 		j = 0;
 		while (map[i][j])
 		{
-			if (map[i][j] == '0')
+			if (map[i][j] == '0' || map[i][j] == dirc)
 			{
 				if (ft_strlen(map[i - 1]) >= j && map[i - 1][j] == ' ')
 					return (0);

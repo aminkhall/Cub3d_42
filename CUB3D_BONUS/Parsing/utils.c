@@ -6,11 +6,11 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:10 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/09 19:41:44 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/08/30 16:04:28 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../cub3d_bonus.h"
 
 int	ft_isdigit(int c)
 {
