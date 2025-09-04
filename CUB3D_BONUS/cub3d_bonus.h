@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:50:06 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/02 17:42:39 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/04 18:51:32 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 #define TILE_SIZE 32
 #define MINIMAP_SCALE 0.12f
 
+
 #define ROWS 20
 #define COLMS 20
 
@@ -48,6 +49,7 @@
 #define KEY_A   0
 #define KEY_S   1
 #define KEY_D   2
+#define ON_MOUSEMOVE   6
 
 // #define KEY_LEFT   123
 /// mac 

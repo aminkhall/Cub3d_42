@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:49:58 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/02 17:39:39 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/04 19:17:40 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,30 @@ int release_input(int key, t_game *game)
     else if (key == KEY_LEFT || key == KEY_RIGHT)
         game->player.turnDirection = 0;
     return 0;
+}
+
+int mouse_hook(int x, int y, t_game *game)
+{
+    static int last_x = -1;
+    int dx;
+
+    if (last_x == -1)
+    {
+        last_x = x;
+        return (0);
+    }
+
+    dx = x - last_x;
+
+    if (dx < 0)
+        game->player.turnDirection = -1;  // turn left
+    else if (dx > 0)
+        game->player.turnDirection = 1;   // turn right
+    else
+        game->player.turnDirection = 0;   // no turn
+
+    last_x = x;
+    return (0);
 }
 
 void render_ray(t_game *game, float ray_angle, int id)
@@ -383,6 +407,7 @@ int main(int ac, char **av)
     
     mlx_hook(game.win, 2, 1L<<0, handle_input, &game);
     mlx_hook(game.win, 3, 1L<<1, release_input, &game);
+    mlx_hook(game.win, ON_MOUSEMOVE, 0, mouse_hook, &game);
     mlx_loop_hook(game.mlx, game_loop, &game);
     mlx_loop(game.mlx);
     return 0;

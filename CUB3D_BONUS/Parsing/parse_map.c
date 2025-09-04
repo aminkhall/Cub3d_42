@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/30 16:04:14 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/04 18:32:42 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,7 @@ int	count_direction(char **str, char *dirc)
 		{
 			if (str[i][j] == 'N' || str[i][j] == 'E' || str[i][j] == 'S'
 				|| str[i][j] == 'W')
-			{
-				
 				++count;
-			}
 			++j;
 		}
 		if (count > 1)
@@ -67,7 +64,7 @@ int	valid_map(char *str)
 	while (str[i])
 	{
 		if (str[i] != '1' && str[i] != '0' && str[i] != 'N' && str[i] != 'E'
-			&& str[i] != 'S' && str[i] != 'W' && str[i] != ' ')
+			&& str[i] != 'S' && str[i] != 'W' && str[i] != ' ' && str[i] != 'D')
 			return (0);
 		++i;
 	}
