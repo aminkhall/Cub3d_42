@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:50:06 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/04 18:51:32 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/08 14:20:07 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 #define TILE_SIZE 32
 #define MINIMAP_SCALE 0.12f
 
+#define MINIMAP_WIDTH 200
+#define MINIMAP_HEIGHT 200
 
 #define ROWS 20
 #define COLMS 20
@@ -49,6 +51,7 @@
 #define KEY_A   0
 #define KEY_S   1
 #define KEY_D   2
+#define KEY_SPACE 49
 #define ON_MOUSEMOVE   6
 
 // #define KEY_LEFT   123
@@ -66,6 +69,8 @@
 #define YELLOW 0xFFFF00 
 #define BLACK 0x000000
 #define RED 0xFF0000
+#define BLUE 0x0000FF
+
 
 #define NUM_RAYS 640
 #define FOV (60 * (PI / 180)) 
@@ -84,6 +89,7 @@ typedef struct s_info
 	char	*east;
 	char	*west;
 	char	*south;
+    char    *door;
 	int		n_cfloor;
 	int		n_cceiling;
 	int		cfloor[3];
@@ -144,7 +150,7 @@ typedef struct s_game {
     t_info      info;
     t_ray       rays[NUM_RAYS];
 
-    t_texture   textures[4]; // 0=NORTH, 1=SOUTH, 2=EAST, 3=WEST
+    t_texture   textures[5]; // 0=NORTH, 1=SOUTH, 2=EAST, 3=WEST, 4=DOOR
 }   t_game;
 
 void	initialize(t_game *game);
@@ -182,4 +188,7 @@ int			check_space(char **info, char dirc);
 void		change_space(char **map);
 void        map_2d(t_game *game);
 void        put_pixel(t_game *game, int x, int y, int color);
+int         is_door(char *str);
+void        parse_door(char *str, t_info *info);
+
 #endif

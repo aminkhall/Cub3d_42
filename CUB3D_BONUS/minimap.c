@@ -1,13 +1,5 @@
 #include "cub3d_bonus.h"
 
-void put_pixel2(t_game *game, int x, int y, int color)
-{
-    if (x < 0 || x >= WINDOW_WIDTH || y < 0 || y >= WINDOW_HEIGHT)
-        return;
-    char *dst = game->addr + (y * game->line_len + x * (game->bpp / 8));
-    *(unsigned int *)dst = color;
-}
-
 void draw_map2d(t_game *game, int x, int y, int color)
 {
     int i;
@@ -18,7 +10,7 @@ void draw_map2d(t_game *game, int x, int y, int color)
     {
         j = -1;
         while (++j < size)
-            put_pixel2(game, x + j, y + i, color);
+            put_pixel(game, x + j, y + i, color);
     }
 }
 
@@ -29,7 +21,7 @@ void draw_circle(t_game *game, int cx, int cy, int radius, int color)
         for (int x = -radius; x <= radius; x++)
         {
             if (x * x + y * y <= radius * radius)
-                put_pixel2(game, cx + x, cy + y, color);
+                put_pixel(game, cx + x, cy + y, color);
         }
     }
 }
@@ -70,10 +62,10 @@ void map_2d(t_game *game)
         {
             if (game->info.map[row][col] == '1')
                 color = BLACK;
-            else if (game->info.map[row][col] == '0')
+            else if (game->info.map[row][col] == '0' || game->info.map[row][col] == 'O')
                 color = WHITE;
-            else
-                color = BLACK;
+            else if (game->info.map[row][col] == 'D')
+                color = YELLOW;
             draw_map2d(game,
                 offset_x + col * scale_size,
                 offset_y + row * scale_size,

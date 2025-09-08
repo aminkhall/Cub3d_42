@@ -14,6 +14,7 @@ SRCS = 	main_bonus.c \
 		./Parsing/parse_color.c \
 		./Parsing/parse_map.c \
 		./Parsing/parse_texter.c \
+		./Parsing/parse_door.c \
 		./Parsing/parsing.c \
 		./Parsing/split.c \
 		./Parsing/utils.c \

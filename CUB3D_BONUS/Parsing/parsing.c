@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/08/30 16:04:21 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/08 12:25:40 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ int	parsing(char *filename, t_info *info)
 			parse_texter(line, info);
 		else if (!info->map && *line && is_color(line))
 			parse_color(line, info);
+		else if (!info->map && *line && is_door(line))
+			parse_door(line, info);
 		else if (*line && is_map(line))
 			parse_map(line, info);
 		else if (*line)

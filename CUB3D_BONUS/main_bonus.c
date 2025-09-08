@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:49:58 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/04 19:17:40 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/08 14:14:42 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,37 @@ int is_wall(float x, float y, t_game *game)
     if (mapX < 0 || mapX >= game->map_width || mapY < 0 || mapY >= game->map_height)
         return 1;
     char c = game->info.map[mapY][mapX];
-    return (c != '0');
+    return (c != '0' && c != 'O');
+}
+int is_do(float x, float y, t_game *game)
+{
+    float padding = 0.1f; // in pixels or fraction of tile
+    int mapX = (int)((x + padding) / game->tile_size);
+    int mapY = (int)((y + padding) / game->tile_size);
+    if (mapX < 0 || mapX >= game->map_width || mapY < 0 || mapY >= game->map_height)
+        return 0;
+    char c = game->info.map[mapY][mapX];
+    return (c == 'D' || c == 'O');
+}
+
+void open_door(t_game *game)
+{
+    t_player *p = &game->player;
+
+    // Look 1/2 tile forward
+    float checkX = p->x + cos(p->rotationAngle) * (game->tile_size);
+    float checkY = p->y + sin(p->rotationAngle) * (game->tile_size);
+
+    int mapX = (int)(checkX / game->tile_size);
+    int mapY = (int)(checkY / game->tile_size);
+
+    if (mapX < 0 || mapX >= game->map_width ||
+        mapY < 0 || mapY >= game->map_height)
+        return;
+    if (game->info.map[mapY][mapX] == 'D')
+        game->info.map[mapY][mapX] = 'O';
+    else if (game->info.map[mapY][mapX] == 'O')
+        game->info.map[mapY][mapX] = 'D';
 }
 
 void update_player(t_game *game)
@@ -75,6 +105,8 @@ int handle_input(int key, t_game *game)
         game->player.turnDirection = -1;
     else if (key == KEY_RIGHT)
         game->player.turnDirection = +1;
+    else if (key == KEY_SPACE)
+        open_door(game);
     return 0;
 }
 
@@ -94,6 +126,8 @@ int mouse_hook(int x, int y, t_game *game)
     static int last_x = -1;
     int dx;
 
+    if (x < 0 || x >= WINDOW_WIDTH || y < 0 || y >= WINDOW_HEIGHT)
+        return (1);
     if (last_x == -1)
     {
         last_x = x;
@@ -101,7 +135,7 @@ int mouse_hook(int x, int y, t_game *game)
     }
 
     dx = x - last_x;
-
+    
     if (dx < 0)
         game->player.turnDirection = -1;  // turn left
     else if (dx > 0)
@@ -134,7 +168,9 @@ void render_ray(t_game *game, float ray_angle, int id)
         if (is_wall(newX, ray->y, game))
         {
             ray->x = newX;
-            if (cos(ray_angle) > 0)
+            if (is_do(newX, ray->y, game))
+                ray->side = 'd';
+            else if (cos(ray_angle) > 0)
                 ray->side = 'e';
             else
                 ray->side = 'w';
@@ -143,7 +179,9 @@ void render_ray(t_game *game, float ray_angle, int id)
         if (is_wall(ray->x, newY, game))
         {
             ray->y = newY;
-            if (sin(ray_angle) > 0)
+            if (is_do(ray->x, newY, game))
+                ray->side = 'd';
+            else if (sin(ray_angle) > 0)
                 ray->side = 's';
             else
                 ray->side = 'n';   
@@ -219,13 +257,18 @@ void render_map(t_game *game, float wall_height, int i)
         tex = &game->textures[2];
         tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * tex->width;
     } 
-    else
+    else if (ray->side == 'w')
     {
         tex = &game->textures[3]; 
         tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * tex->width;
     }
+    else
+    {
+        tex = &game->textures[4]; 
+        tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * tex->width;
+    }
     if (tex_x < 0) 
-    tex_x += tex->width;
+        tex_x += tex->width;
     int x = screen_x0;
     
     while (x < screen_x1) 
@@ -321,18 +364,18 @@ void map_dimensions(t_game *game)
 
 void init_textures(t_game *game)
 {
-    char *path[4] ;
+    char *path[5] ;
     int i = 0;
     
     path[0] = game->info.north; 
     path[1] = game->info.south; 
     path[2] = game->info.east; 
-    path[3] = game->info.west; 
-    while ( i < 4)
+    path[3] = game->info.west;
+    path[4] = game->info.door;
+    while (i < 5)
     {
         game->textures[i].img = mlx_xpm_file_to_image(game->mlx, path[i],
             &game->textures[i].width, &game->textures[i].height);
-
         if (!game->textures[i].img)
         {
             printf("Error: Failed to load texture %s\n", path[i]);
@@ -382,7 +425,7 @@ void initialize(t_game *game)
 {
     game->tile_size = TILE_SIZE;
     game->player.walkSpeed = 5;
-    game->player.turnSpeed = 0.05f;
+    game->player.turnSpeed = 0.03f;
     
     map_dimensions(game);
     init_textures(game); 
@@ -400,14 +443,13 @@ int main(int ac, char **av)
         return (1);
     if (!parsing(av[1], &game.info))
         return (1);
-        
     game.mlx = mlx_init();
     game.win = mlx_new_window(game.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub");
     initialize(&game);
     
     mlx_hook(game.win, 2, 1L<<0, handle_input, &game);
     mlx_hook(game.win, 3, 1L<<1, release_input, &game);
-    mlx_hook(game.win, ON_MOUSEMOVE, 0, mouse_hook, &game);
+    mlx_hook(game.win, ON_MOUSEMOVE, 1L<<6, mouse_hook, &game);
     mlx_loop_hook(game.mlx, game_loop, &game);
     mlx_loop(game.mlx);
     return 0;
