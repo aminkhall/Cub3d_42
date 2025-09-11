@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/09/11 18:49:56 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/11 20:40:03 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ void full_map(t_info *info)
 	change_space(info->map);
 	info->door = ft_strdup("images/door.xpm");
 	info->anim[0] = ft_strdup("images/anim0.xpm");
-	info->anim[1] = ft_strdup("images/anim0.xpm");
+	info->anim[1] = ft_strdup("images/anim1.xpm");
+	info->anim[2] = ft_strdup("images/anim2.xpm");
+	info->anim[3] = ft_strdup("images/anim3.xpm");
 }
 
 int	parsing(char *filename, t_info *info)

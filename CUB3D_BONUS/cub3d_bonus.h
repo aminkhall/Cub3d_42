@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:50:06 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/11 20:12:33 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/11 20:40:34 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@
 #define ROWS 20
 #define COLMS 20
 
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 1024
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 640
 
 #define FOV_ANGLE (60 * (PI / 180))
 
@@ -75,7 +75,7 @@
 #define BLUE 0x0000FF
 
 
-#define NUM_RAYS 1024
+#define NUM_RAYS 640
 #define FOV (60 * (PI / 180)) 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
@@ -93,7 +93,7 @@ typedef struct s_info
 	char	*west;
 	char	*south;
     char    *door;
-    char    *anim[2];
+    char    *anim[4];
 	int		n_cfloor;
 	int		n_cceiling;
 	int		cfloor[3];
@@ -154,7 +154,7 @@ typedef struct s_game {
     t_info      info;
     t_ray       rays[NUM_RAYS];
 
-    t_texture   textures[7]; // 0=NORTH, 1=SOUTH, 2=EAST, 3=WEST, 4=DOOR, 5=ANIM1, 6=ANIM2
+    t_texture   textures[9]; // 0=NORTH, 1=SOUTH, 2=EAST, 3=WEST, 4=DOOR, 5=ANIM1, 6=ANIM2, 7=ANIM2 8=ANIM3
 }   t_game;
 
 void	initialize(t_game *game);

@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:49:58 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/11 20:15:05 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/11 20:45:13 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,20 +76,21 @@ void open_door(t_game *game)
 void draw_sprite_centered(t_game *game, t_texture *tex)
 {
     int sprite_width = tex->width / 4;
-    int sprite_height = tex->height;
+    int sprite_height = tex->height / 2;
     int start_x = (WINDOW_WIDTH / 3);
     int start_y = (WINDOW_HEIGHT) - tex->height;
 
-    for (int x = 0; x < sprite_width; x++) {
+    for (int x = 0; x < sprite_width * 2; x++) {
         int screen_x = start_x + x;
         if (screen_x < 0 || screen_x >= WINDOW_WIDTH)
             continue;
-        for (int y = 0; y < sprite_height; y++) {
+        for (int y = 0; y < sprite_height * 2; y++) {
             int screen_y = start_y + y;
             if (screen_y < 0 || screen_y >= WINDOW_HEIGHT)
                 continue;
             int color = get_tex_color(tex, x, y);
-            put_pixel(game, screen_x, screen_y, color);
+            if ((color & 0x00FFFFFF) != 0)
+                put_pixel(game, screen_x, screen_y, color);
         }
     }
 }
@@ -97,12 +98,23 @@ void draw_sprite_centered(t_game *game, t_texture *tex)
 void animation(t_game *game)
 {
     t_texture *tex;
+    int i;
 
-    if (!game->anim_val) 
+    if (!game->anim_val)
+    {
         tex = &game->textures[5];
+        draw_sprite_centered(game, tex);
+    }
     else
-        tex = &game->textures[6];
-    draw_sprite_centered(game, tex);
+    {
+        i = 6;
+        while (i < 9)
+        {
+            tex = &game->textures[i];
+            draw_sprite_centered(game, tex);
+            ++i;
+        }
+    }
 }
 
 void update_player(t_game *game)
@@ -405,7 +417,7 @@ void map_dimensions(t_game *game)
 
 void init_textures(t_game *game)
 {
-    char *path[7] ;
+    char *path[9] ;
     int i = 0;
     
     path[0] = game->info.north; 
@@ -416,7 +428,9 @@ void init_textures(t_game *game)
     path[4] = game->info.door;
     path[5] = game->info.anim[0];
     path[6] = game->info.anim[1];
-    while (i < 7)
+    path[7] = game->info.anim[2];
+    path[8] = game->info.anim[3];
+    while (i < 9)
     {
         game->textures[i].img = mlx_xpm_file_to_image(game->mlx, path[i],
             &game->textures[i].width, &game->textures[i].height);
