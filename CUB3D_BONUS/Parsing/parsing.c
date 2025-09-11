@@ -6,11 +6,19 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/09/08 12:25:40 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/11 18:49:56 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../cub3d_bonus.h"
+
+void full_map(t_info *info)
+{
+	change_space(info->map);
+	info->door = ft_strdup("images/door.xpm");
+	info->anim[0] = ft_strdup("images/anim0.xpm");
+	info->anim[1] = ft_strdup("images/anim0.xpm");
+}
 
 int	parsing(char *filename, t_info *info)
 {
@@ -18,15 +26,13 @@ int	parsing(char *filename, t_info *info)
 
 	info->fd = open(filename, O_RDONLY);
 	if (info->fd < 0)
-		return (puts("File dosen't found"), 0);
+		return (printf("File dosen't found"), 0);
 	while ((line = get_next_line(info->fd)))
 	{
 		if (!info->map && *line && is_texter(line))
 			parse_texter(line, info);
 		else if (!info->map && *line && is_color(line))
 			parse_color(line, info);
-		else if (!info->map && *line && is_door(line))
-			parse_door(line, info);
 		else if (*line && is_map(line))
 			parse_map(line, info);
 		else if (*line)
@@ -38,8 +44,8 @@ int	parsing(char *filename, t_info *info)
 		|| count_direction(info->map, &info->direc) > 1 || info->n_cceiling != 1
 		|| info->n_cfloor != 1 || !info->east || !info->north
 		|| !info->south || !info->west || !check_space(info->map, info->direc))
-		return (puts("invalid input"), ft_clean(info), 0);
-	change_space(info->map);
+		return (printf("invalid input"), ft_clean(info), 0);
+	full_map(info);
 	return (1);
 }
 

@@ -2,9 +2,11 @@ NAME = cub3d_bonus
 CC = cc
 
 HEADER     =    cub3d_bonus.h
-CFLAGS =  -fsanitize=address -g3 #-Wall -Wextra -Werror
-MLXFLAGS = -lmlx -framework OpenGL -framework AppKit
-
+# CFLAGS =  -fsanitize=address -g3 #-Wall -Wextra -Werror
+# MLXFLAGS = #-lmlx -framework OpenGL -framework AppKit
+MLX_DIR = minilibx-linux
+CFLAGS =  -I$(MLX_DIR) #-Wall -Wextra -Werror
+MLXFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 
 SRCS = 	main_bonus.c \
 		minimap.c \
@@ -14,7 +16,6 @@ SRCS = 	main_bonus.c \
 		./Parsing/parse_color.c \
 		./Parsing/parse_map.c \
 		./Parsing/parse_texter.c \
-		./Parsing/parse_door.c \
 		./Parsing/parsing.c \
 		./Parsing/split.c \
 		./Parsing/utils.c \
@@ -29,7 +30,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(MLXFLAGS) -o $(NAME)
 
 %.o : %.c $(HEADER)
-	 ${CC} $(CFLAGS)  -c $< -o $@
+	 ${CC} $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS)

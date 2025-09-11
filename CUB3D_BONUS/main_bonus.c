@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:49:58 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/08 14:14:42 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/11 20:15:05 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,38 @@ void open_door(t_game *game)
         game->info.map[mapY][mapX] = 'D';
 }
 
+void draw_sprite_centered(t_game *game, t_texture *tex)
+{
+    int sprite_width = tex->width / 4;
+    int sprite_height = tex->height;
+    int start_x = (WINDOW_WIDTH / 3);
+    int start_y = (WINDOW_HEIGHT) - tex->height;
+
+    for (int x = 0; x < sprite_width; x++) {
+        int screen_x = start_x + x;
+        if (screen_x < 0 || screen_x >= WINDOW_WIDTH)
+            continue;
+        for (int y = 0; y < sprite_height; y++) {
+            int screen_y = start_y + y;
+            if (screen_y < 0 || screen_y >= WINDOW_HEIGHT)
+                continue;
+            int color = get_tex_color(tex, x, y);
+            put_pixel(game, screen_x, screen_y, color);
+        }
+    }
+}
+
+void animation(t_game *game)
+{
+    t_texture *tex;
+
+    if (!game->anim_val) 
+        tex = &game->textures[5];
+    else
+        tex = &game->textures[6];
+    draw_sprite_centered(game, tex);
+}
+
 void update_player(t_game *game)
 {
     t_player *p = &game->player;
@@ -86,6 +118,7 @@ void update_player(t_game *game)
         p->x = newX;
     if (!is_wall(game->player.x, newY, game))
         p->y = newY;
+    game->player.turnDirection = 0;
 }
 
 
@@ -107,6 +140,8 @@ int handle_input(int key, t_game *game)
         game->player.turnDirection = +1;
     else if (key == KEY_SPACE)
         open_door(game);
+    else if (key == KEY_E)
+        game->anim_val = 1;
     return 0;
 }
 
@@ -118,6 +153,8 @@ int release_input(int key, t_game *game)
         game->player.strafeDirection = 0;
     else if (key == KEY_LEFT || key == KEY_RIGHT)
         game->player.turnDirection = 0;
+    else if (key == KEY_E)
+        game->anim_val = 0;
     return 0;
 }
 
@@ -126,26 +163,27 @@ int mouse_hook(int x, int y, t_game *game)
     static int last_x = -1;
     int dx;
 
-    if (x < 0 || x >= WINDOW_WIDTH || y < 0 || y >= WINDOW_HEIGHT)
-        return (1);
     if (last_x == -1)
     {
         last_x = x;
         return (0);
     }
-
-    dx = x - last_x;
-    
-    if (dx < 0)
-        game->player.turnDirection = -1;  // turn left
-    else if (dx > 0)
-        game->player.turnDirection = 1;   // turn right
+    if (x >= 0 && x <= WINDOW_WIDTH && y >= 0 && y <= WINDOW_HEIGHT)
+    {
+        dx = x - last_x;
+        if (dx < 0)
+            game->player.turnDirection = -1;  
+        else if (dx > 0)
+            game->player.turnDirection = 1;   
+        else
+            game->player.turnDirection = 0;   
+        last_x = x;
+    }
     else
-        game->player.turnDirection = 0;   // no turn
-
-    last_x = x;
+        game->player.turnDirection = 0;
     return (0);
 }
+
 
 void render_ray(t_game *game, float ray_angle, int id)
 {
@@ -262,7 +300,7 @@ void render_map(t_game *game, float wall_height, int i)
         tex = &game->textures[3]; 
         tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * tex->width;
     }
-    else
+    else if (ray->side == 'd')
     {
         tex = &game->textures[4]; 
         tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * tex->width;
@@ -325,6 +363,8 @@ void map_3d(t_game *game)
         if (wall_height < 1.0f) 
             wall_height = 1.0f;
         render_map(game, wall_height, i);
+        
+
         i++;
     }
 }
@@ -337,6 +377,7 @@ int game_loop(t_game *game)
     render_rays(game);
     map_3d(game);
     map_2d(game);
+    animation(game);
     // render_minimap(game);
     update_player(game);
     mlx_put_image_to_window(game->mlx, game->win, game->img, 0, 0);
@@ -364,7 +405,7 @@ void map_dimensions(t_game *game)
 
 void init_textures(t_game *game)
 {
-    char *path[5] ;
+    char *path[7] ;
     int i = 0;
     
     path[0] = game->info.north; 
@@ -372,7 +413,10 @@ void init_textures(t_game *game)
     path[2] = game->info.east; 
     path[3] = game->info.west;
     path[4] = game->info.door;
-    while (i < 5)
+    path[4] = game->info.door;
+    path[5] = game->info.anim[0];
+    path[6] = game->info.anim[1];
+    while (i < 7)
     {
         game->textures[i].img = mlx_xpm_file_to_image(game->mlx, path[i],
             &game->textures[i].width, &game->textures[i].height);
@@ -425,7 +469,7 @@ void initialize(t_game *game)
 {
     game->tile_size = TILE_SIZE;
     game->player.walkSpeed = 5;
-    game->player.turnSpeed = 0.03f;
+    game->player.turnSpeed = 0.08f;
     
     map_dimensions(game);
     init_textures(game); 
@@ -447,9 +491,9 @@ int main(int ac, char **av)
     game.win = mlx_new_window(game.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub");
     initialize(&game);
     
+    mlx_hook(game.win, ON_MOUSEMOVE, 1L<<6, mouse_hook, &game);
     mlx_hook(game.win, 2, 1L<<0, handle_input, &game);
     mlx_hook(game.win, 3, 1L<<1, release_input, &game);
-    mlx_hook(game.win, ON_MOUSEMOVE, 1L<<6, mouse_hook, &game);
     mlx_loop_hook(game.mlx, game_loop, &game);
     mlx_loop(game.mlx);
     return 0;

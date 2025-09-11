@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:50:06 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/08 14:20:07 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/09/11 20:12:33 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 # include <stdio.h>
 # include <math.h>
 # include <unistd.h>
-# include <mlx.h>
+// # include <mlx.h>
+#include "minilibx-linux/mlx.h"
 # include <fcntl.h>
 # include <limits.h>
 
@@ -36,34 +37,36 @@
 #define ROWS 20
 #define COLMS 20
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 640
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 1024
 
 #define FOV_ANGLE (60 * (PI / 180))
 
 
 // #define KEY_ESC    53
-// #define KEY_W      'w'
-// #define KEY_S      's'
-// #define KEY_A      'a'
-// #define KEY_D      'd'
-#define KEY_W   13
-#define KEY_A   0
-#define KEY_S   1
-#define KEY_D   2
-#define KEY_SPACE 49
+#define KEY_W      'w'
+#define KEY_S      's'
+#define KEY_A      'a'
+#define KEY_D      'd'
+#define KEY_E      'e'
+#define KEY_SPACE ' '
 #define ON_MOUSEMOVE   6
+// #define KEY_W   13
+// #define KEY_A   0
+// #define KEY_S   1
+// #define KEY_D   2
+// #define KEY_SPACE 49
 
 // #define KEY_LEFT   123
 /// mac 
-#define KEY_ESC    53
-#define KEY_LEFT   123
-#define KEY_RIGHT  124
+// #define KEY_ESC    53
+// #define KEY_LEFT   123
+// #define KEY_RIGHT  124
 
 //////// linux
-// #define KEY_ESC     65307
-// #define KEY_LEFT    65361
-// #define KEY_RIGHT   65363
+#define KEY_ESC     65307
+#define KEY_LEFT    65361
+#define KEY_RIGHT   65363
 
 #define WHITE 0xFFFFFF
 #define YELLOW 0xFFFF00 
@@ -72,7 +75,7 @@
 #define BLUE 0x0000FF
 
 
-#define NUM_RAYS 640
+#define NUM_RAYS 1024
 #define FOV (60 * (PI / 180)) 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
@@ -90,6 +93,7 @@ typedef struct s_info
 	char	*west;
 	char	*south;
     char    *door;
+    char    *anim[2];
 	int		n_cfloor;
 	int		n_cceiling;
 	int		cfloor[3];
@@ -145,12 +149,12 @@ typedef struct s_game {
     int         map_height;
     int         map_width; 
     int         tile_size;
-
+    int         anim_val;
     t_player    player;
     t_info      info;
     t_ray       rays[NUM_RAYS];
 
-    t_texture   textures[5]; // 0=NORTH, 1=SOUTH, 2=EAST, 3=WEST, 4=DOOR
+    t_texture   textures[7]; // 0=NORTH, 1=SOUTH, 2=EAST, 3=WEST, 4=DOOR, 5=ANIM1, 6=ANIM2
 }   t_game;
 
 void	initialize(t_game *game);
