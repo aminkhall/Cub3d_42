@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:21:43 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/10/10 16:32:20 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:35:36 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,44 +14,36 @@
 
 void	draw_sprite_centered(t_game *game, t_texture *tex)
 {
-	int		sprite_height;
-	int		sprite_width;
-	float	scale;
-	int		start_x;
-	int		start_y;
-	int		screen_x;
-	int		screen_y;
-	int		color;
-	int		tex_x;
-	int		tex_y;
+	t_sprite	sprit;
+	int			x;
+	int			y;
 
-	scale = (WINDOW_HEIGHT / 2.5f) / tex->height;
-	sprite_height = (int)(tex->height * scale);
-	sprite_width = (int)(tex->width * scale);
-	start_x = (WINDOW_WIDTH / 2) - (sprite_width / 2);
-	start_y = WINDOW_HEIGHT - sprite_height;
-	for (int x = 0; x < sprite_width; x++)
+	sprit.scale = (WINDOW_HEIGHT / 2.5f) / tex->height;
+	sprit.sprite_height = (int)(tex->height * sprit.scale);
+	sprit.sprite_width = (int)(tex->width * sprit.scale);
+	sprit.start_x = (WINDOW_WIDTH / 2) - (sprit.sprite_width / 2);
+	sprit.start_y = WINDOW_HEIGHT - sprit.sprite_height;
+	x = -1;
+	while (++x < sprit.sprite_width)
 	{
-		screen_x = start_x + x;
-		if (screen_x < 0 || screen_x >= WINDOW_WIDTH)
-			continue ;
-		for (int y = 0; y < sprite_height; y++)
+		y = -1;
+		sprit.screen_x = sprit.start_x + x;
+		while (++y < sprit.sprite_height)
 		{
-			screen_y = start_y + y;
-			if (screen_y < 0 || screen_y >= WINDOW_HEIGHT)
-				continue ;
-			tex_x = (int)((x / (float)sprite_width) * tex->width);
-			tex_y = (int)((y / (float)sprite_height) * tex->height);
-			color = get_tex_color(tex, tex_x, tex_y);
-			if ((color & 0x00FFFFFF) != 0)
-				put_pixel(game, screen_x, screen_y, color);
+			sprit.screen_y = sprit.start_y + y;
+			sprit.tex_x = (int)((x / (float)sprit.sprite_width) * tex->width);
+			sprit.tex_y = (int)((y / (float)sprit.sprite_height) * tex->height);
+			sprit.color = get_tex_color(tex, sprit.tex_x, sprit.tex_y);
+			if ((sprit.color & 0x00FFFFFF) != 0)
+				put_pixel(game, sprit.screen_x, sprit.screen_y, sprit.color);
 		}
 	}
 }
+
 void	animation(t_game *game)
 {
-	t_texture *tex;
-	int i;
+	t_texture	*tex;
+	int			i;
 
 	if (!game->anim_val)
 	{

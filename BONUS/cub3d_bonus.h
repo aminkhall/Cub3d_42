@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:50:06 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/10/09 19:27:09 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:36:46 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,20 @@ typedef struct s_info
 	int			cceiling[3];
 	char		direc;
 }				t_info;
+
+typedef struct s_sprite
+{
+	int			sprite_height;
+	int			sprite_width;
+	float		scale;
+	int			start_x;
+	int			start_y;
+	int			screen_x;
+	int			screen_y;
+	int			color;
+	int			tex_x;
+	int			tex_y;
+}				t_sprite;
 
 typedef struct s_rect
 {
