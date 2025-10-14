@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:03 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/09/29 19:03:45 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/07 15:24:21 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ char	*extract_line(char *line)
 	int		j;
 
 	i = 0;
+	result = NULL;
 	if (!line || !*line)
 		return (NULL);
 	while (line[i] && line[i] != '\n')

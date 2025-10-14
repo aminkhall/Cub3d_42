@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:50:06 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/29 19:27:23 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/09 19:27:09 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@
 # define NUM_RAYS 1240
 # define FOV (60 * (PI / 180))
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 1
 # endif
 
 // Parsing Struct
@@ -97,6 +97,15 @@ typedef struct s_info
 	int			cceiling[3];
 	char		direc;
 }				t_info;
+
+typedef struct s_rect
+{
+	int			x;
+	int			y;
+	float		height;
+	float		width;
+	int			color;
+}				t_rect;
 
 typedef struct s_player
 {
@@ -135,6 +144,10 @@ typedef struct s_texture
 	int			bpp;
 	int			line_len;
 	int			endian;
+	int			top;
+	int			bottom;
+	float		tex_pos;
+	float		tex_step;
 }				t_texture;
 
 typedef struct s_game
@@ -160,17 +173,17 @@ typedef struct s_game
 	float		sideDistY;
 	float		deltaDistX;
 	float		deltaDistY;
+	int			e_col;
+	int			s_col;
 	t_player	player;
 	t_info		info;
 	t_ray		rays[NUM_RAYS];
-
-	t_texture textures[9]; // 0=NORTH, 1=SOUTH, 2=EAST, 3=WEST, 4=DOOR, 5=ANIM1, 6=ANIM2, 7=ANIM2 8=ANIM3
+	int			last_x;
+	t_texture	textures[9];
 }				t_game;
 
 void			initialize(t_game *game);
 void			wall_free(t_game *game);
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>> Parsing <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 char			*get_next_line(int fd);
 int				parsing(char *filename, t_info *info);
 int				valid_filename(char *str);
@@ -202,7 +215,12 @@ int				check_space(char **info, char dirc);
 void			change_space(char **map);
 void			map_2d(t_game *game);
 void			put_pixel(t_game *game, int x, int y, int color);
-int				is_door(char *str);
-void			parse_door(char *str, t_info *info);
-
+void			render_rays(t_game *game);
+void			map_3d(t_game *game);
+int				get_tex_color(t_texture *tex, int x, int y);
+int				rgb_to_int(int r, int g, int b);
+void			animation(t_game *game);
+int				mouse_hook(int x, int y, t_game *game);
+void			open_door(t_game *game);
+void			free_txt(t_info *info);
 #endif

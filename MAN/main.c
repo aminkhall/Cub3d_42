@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aymisbah <aymisbah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:49:58 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/08/29 20:56:22 by aymisbah         ###   ########.fr       */
+/*   Updated: 2025/10/07 17:27:04 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,10 @@ void update_player(t_game *game)
 int handle_input(int key, t_game *game)
 {
     if (key == KEY_ESC)
+    {
+        ft_clean(&game->info);
         exit(0);
+    }
     if (key == KEY_W)
         game->player.walkDirection = +1;
     else if (key == KEY_S)
@@ -90,60 +93,96 @@ int release_input(int key, t_game *game)
         game->player.turnDirection = 0;
     return 0;
 }
-
-void ray_angles(t_game *game,t_ray *ray,float ray_angle)
+int check_wall(t_game *game,int mapX,int mapY)
 {
-    float distX;
-    float distY;
-    float newX;
-    float newY;
-    float step_size;
-
-    step_size = 0.2f;
-    while (1)
+    char cell = game->info.map[mapY][mapX];
+    if (cell != '0') 
+        return (1);
+    return (0);
+}
+void check_sides(t_game *game,t_ray *ray)
+{
+    while (!check_wall(game,game->mapX,game->mapY))
     {
-        distX = cos(ray_angle) * step_size;
-        distY = sin(ray_angle) * step_size;
-        newX = ray->x + distX;
-        newY = ray->y + distY;
-        if (is_wall(newX, ray->y, game))
+        if (game->sideDistX < game->sideDistY)
         {
-            ray->x = newX;
-            if (cos(ray_angle) > 0)
+            game->sideDistX += game->deltaDistX;
+            game->mapX += game->stepX;
+            if ((game->stepX > 0))
                 ray->side = 'e';
             else
                 ray->side = 'w';
-            break ;
         }
-        if (is_wall(ray->x, newY, game))
+        else
         {
-            ray->y = newY;
-            if (sin(ray_angle) > 0)
+            game->sideDistY += game->deltaDistY;
+            game->mapY += game->stepY;
+            if ((game->stepY > 0))
                 ray->side = 's';
             else
-                ray->side = 'n';   
-            break ;
+                ray->side = 'n';
         }
-        ray->x = newX;
-        ray->y = newY;
     }
 }
 
 
-void render_ray(t_game *game, float ray_angle, int id)
+void grid_distance(t_game *game,t_ray *ray,float ray_angle)
 {
-    t_ray *ray = &game->rays[id];
-    ray->x = game->player.x;
-    ray->y = game->player.y;
+    if (cos(ray_angle) < 0)
+        game->stepX = -1;
+    else
+        game->stepX = 1;
 
-    ray_angle = fmod(ray_angle, TWO_PI);
-    ray_angles(game,ray,ray_angle);
-    ray->dx = ray->x - game->player.x;
-    ray->dy = ray->y - game->player.y;
-    // fisheye correction
+    if (sin(ray_angle) < 0)
+        game->stepY = -1;
+    else
+        game->stepY = 1;
+    if (game->stepX > 0)
+        game->sideDistX = ((game->mapX + 1) * game->tile_size - game->player.x) * game->deltaDistX / game->tile_size;
+    else
+        game->sideDistX = (game->player.x - game->mapX * game->tile_size) * game->deltaDistX / game->tile_size;
+
+    if (game->stepY > 0)
+        game->sideDistY = ((game->mapY + 1) * game->tile_size - game->player.y) * game->deltaDistY / game->tile_size;
+    else
+        game->sideDistY = (game->player.y - game->mapY * game->tile_size) * game->deltaDistY / game->tile_size;
+    check_sides(game,ray);
+}
+void hit_point(t_game *game,t_ray *ray,float ray_angle)
+{
+    float hitX, hitY;
+    if (ray->side == 'e' || ray->side == 'w')
+    {
+        hitX = game->player.x + cos(ray_angle) * (game->sideDistX - game->deltaDistX);
+        hitY = game->player.y + sin(ray_angle) * (game->sideDistX - game->deltaDistX);
+    }
+    else
+    {
+        hitX = game->player.x + cos(ray_angle) * (game->sideDistY - game->deltaDistY);
+        hitY = game->player.y + sin(ray_angle) * (game->sideDistY - game->deltaDistY);
+    }
+    ray->x = hitX;
+    ray->y = hitY;
     float relative_angle = ray_angle - game->player.rotationAngle;
-    ray->distance = sqrt(ray->dx * ray->dx + ray->dy * ray->dy);
+    relative_angle = fmodf(relative_angle + PI, TWO_PI) - PI;
+    ray->distance = sqrt((hitX - game->player.x)*(hitX - game->player.x) +
+                         (hitY - game->player.y)*(hitY - game->player.y));
     ray->distance *= cos(relative_angle);
+}
+
+void render_ray(t_game *game, float ray_angle, int i)
+{
+    float relative_angle;
+    t_ray *ray ;
+
+    ray = &game->rays[i];
+    game->mapX = (int)(game->player.x / game->tile_size);
+    game->mapY = (int)(game->player.y / game->tile_size);
+    game->deltaDistX = fabs(1 / cos(ray_angle)) * game->tile_size;
+    game->deltaDistY = fabs(1 / sin(ray_angle)) * game->tile_size;
+    grid_distance(game,ray,ray_angle);
+    hit_point(game,ray,ray_angle);
+
 }
 
 void render_rays(t_game *game)
@@ -164,38 +203,91 @@ void render_rays(t_game *game)
     }
 }
 
-int choose_texture(t_game *game,t_texture **tex,t_ray *ray)
-{
-    float tex_x;
-    if (ray->side == 'n') 
-    {
-        *tex = &game->textures[0];
-        tex_x = fmodf(ray->x, game->tile_size) / game->tile_size * (*tex)->width;
-    } 
-    else if (ray->side == 's') 
-    {
-        *tex = &game->textures[1];
-        tex_x = fmodf(ray->x, game->tile_size) / game->tile_size * (*tex)->width;
-    } 
-    else if (ray->side == 'e') 
-    {
-        *tex = &game->textures[2];
-        tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * (*tex)->width;
-    } 
-    else
-    {
-        *tex = &game->textures[3]; 
-        tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * (*tex)->width;
-    }
-    return (tex_x);
-}
+// int choose_texture(t_game *game,t_texture **tex,t_ray *ray)
+// {
+//      float tex_x;
+//     if (ray->side == 'n')
+//         tex = &game->textures[0];
+//     else if (ray->side == 's')
+//         tex = &game->textures[1];
+//     else if (ray->side == 'e')
+//         tex = &game->textures[2];
+//     else
+//         tex = &game->textures[3];
+//     if (ray->side == 'n' || ray->side == 's')
+//         tex_x = fmodf(ray->x, game->tile_size) / game->tile_size * tex->width;
+//     else
+//         tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * tex->width;
+//     return (tex_x);
+// }
 
-void draw(t_game *game,t_texture *tex,float tex_x,float wall_height)
+// void draw(t_game *game,t_texture *tex,float tex_x,float wall_height)
+// {
+//     int top;
+//     int bottom;
+//     float t;
+//     int tex_y;
+
+//     top    = (int)(WINDOW_HEIGHT / 2 - wall_height / 2);
+//     bottom = (int)(WINDOW_HEIGHT / 2 + wall_height / 2);
+//     if (top < 0)
+//          top = 0;
+//     if (bottom > WINDOW_HEIGHT) 
+//         bottom = WINDOW_HEIGHT;
+//     while (game->screen_x0 < game->screen_x1) 
+//     {
+//         int y = top;
+//         while (y < bottom) 
+//         {
+//             t = (float)(y - top) / (float)(bottom - top);
+//             tex_y = (int)(t * tex->height);
+//             if (tex_y < 0) 
+//                 tex_y = 0;
+//             if (tex_y >= tex->height) 
+//                 tex_y = tex->height - 1;
+//             put_pixel(game, game->screen_x0, y, get_tex_color(tex, (int)tex_x, tex_y));
+//             y++;
+//         }
+//         game->screen_x0++;
+//     }
+// }
+
+// void render_map(t_game *game, float wall_height, int i)
+// {
+//     t_ray *ray = &game->rays[i];
+//     t_texture *tex;
+//     float tex_x;
+
+//     game->screen_x0 = i;
+//     game->screen_x1 = i + 1;
+//     // if (game->screen_x1 <= game->screen_x0) 
+//     //     game->screen_x1 = game->screen_x0 + 1;
+//     // if (game->screen_x0 < 0) 
+//     //     game->screen_x0 = 0;
+//     // if (game->screen_x1 > WINDOW_WIDTH) 
+//     //     game->screen_x1 = WINDOW_WIDTH;
+//     tex_x = choose_texture(game, &tex,ray);
+//     if (tex_x < 0) 
+//         tex_x += tex->width;
+//     draw(game,tex,tex_x,wall_height);
+// }
+void render_map(t_game *game, float wall_height, int i)
 {
+    t_ray *ray = &game->rays[i];
+    t_texture *tex;
+    int screen_x0;
+    int screen_x1;
     int top;
     int bottom;
-    float t;
-    int tex_y;
+    
+    screen_x0 = (i * WINDOW_WIDTH) / NUM_RAYS;
+    screen_x1 = ((i + 1) * WINDOW_WIDTH) / NUM_RAYS;
+    if (screen_x1 <= screen_x0) 
+        screen_x1 = screen_x0 + 1;
+    if (screen_x0 < 0) 
+        screen_x0 = 0;
+    if (screen_x1 > WINDOW_WIDTH) 
+        screen_x1 = WINDOW_WIDTH;
 
     top    = (int)(WINDOW_HEIGHT / 2 - wall_height / 2);
     bottom = (int)(WINDOW_HEIGHT / 2 + wall_height / 2);
@@ -203,44 +295,45 @@ void draw(t_game *game,t_texture *tex,float tex_x,float wall_height)
          top = 0;
     if (bottom > WINDOW_HEIGHT) 
         bottom = WINDOW_HEIGHT;
-    while (game->screen_x0 < game->screen_x1) 
-    {
-        int y = top;
-        while (y < bottom) 
-        {
-            t = (float)(y - top) / (float)(bottom - top);
-            tex_y = (int)(t * tex->height);
-            if (tex_y < 0) 
-                tex_y = 0;
-            if (tex_y >= tex->height) 
-                tex_y = tex->height - 1;
-            put_pixel(game, game->screen_x0, y, get_tex_color(tex, (int)tex_x, tex_y));
-            y++;
-        }
-        game->screen_x0++;
-    }
-}
-
-void render_map(t_game *game, float wall_height, int i)
-{
-    t_ray *ray = &game->rays[i];
-    t_texture *tex;
     float tex_x;
+    if (ray->side == 'n')
+        tex = &game->textures[0];
+    else if (ray->side == 's')
+        tex = &game->textures[1];
+    else if (ray->side == 'e')
+        tex = &game->textures[2];
+    else
+        tex = &game->textures[3];
+    if (ray->side == 'n' || ray->side == 's')
+        tex_x = fmodf(ray->x, game->tile_size) / game->tile_size * tex->width;
+    else
+        tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * tex->width;
 
-    game->screen_x0 = i;
-    game->screen_x1 = i + 1;
-    // if (game->screen_x1 <= game->screen_x0) 
-    //     game->screen_x1 = game->screen_x0 + 1;
-    // if (game->screen_x0 < 0) 
-    //     game->screen_x0 = 0;
-    // if (game->screen_x1 > WINDOW_WIDTH) 
-    //     game->screen_x1 = WINDOW_WIDTH;
-    tex_x = choose_texture(game, &tex,ray);
     if (tex_x < 0) 
         tex_x += tex->width;
-    draw(game,tex,tex_x,wall_height);
-}
+    float tex_step = (float)tex->height / wall_height;
+    float tex_pos = (top - WINDOW_HEIGHT / 2 + wall_height / 2) * tex_step;
+    int x = screen_x0;
+    while (x < screen_x1) 
+    {
+        int y = top;
+        float tex_y_pos = tex_pos;
 
+        while (y < bottom) 
+        {
+            int tex_y = (int)tex_y_pos;
+            if (tex_y < 0) tex_y = 0;
+            if (tex_y >= tex->height) tex_y = tex->height - 1;
+
+            int color = get_tex_color(tex, (int)tex_x, tex_y);
+            put_pixel(game, x, y, color);
+
+            tex_y_pos += tex_step;
+            y++;
+        }
+        x++;
+    }
+}
 void c_f_colors(t_game *game)
 {
     int c_color;

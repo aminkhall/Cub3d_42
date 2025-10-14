@@ -1,76 +1,108 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minimap.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/09 19:23:57 by mkhallou          #+#    #+#             */
+/*   Updated: 2025/10/09 19:30:43 by mkhallou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d_bonus.h"
 
-void draw_map2d(t_game *game, int x, int y, int size, int color)
+void	draw_map2d(t_game *game, t_rect *rect)
 {
-    int i;
-    int j;
-    i = -1;
-    while (++i < size)
-    {
-        j = -1;
-        while (++j < size)
-            put_pixel(game, x + j, y + i, color);
-    }
+	int	i;
+	int	j;
+
+	i = rect->y;
+	while (i < rect->y + rect->height)
+	{
+		j = rect->x;
+		while (j < rect->x + rect->width)
+		{
+			put_pixel(game, j, i, rect->color);
+			++j;
+		}
+		++i;
+	}
 }
 
-void draw_circle(t_game *game, int cx, int cy, int radius, int color)
+void	cell_color(t_game *game, t_rect *rect, char cell)
 {
-    for (int y = -radius; y <= radius; y++)
-    {
-        for (int x = -radius; x <= radius; x++)
-        {
-            if (x * x + y * y <= radius * radius)
-                put_pixel(game, cx + x, cy + y, color);
-        }
-    }
+	if (cell == '1')
+		rect->color = BLACK;
+	else if (cell == '0' || cell == 'O')
+		rect->color = WHITE;
+	else if (cell == 'D')
+		rect->color = YELLOW;
+	draw_map2d(game, rect);
 }
 
-int ft_max_len(char **map)
+void	draw_circle(t_game *game, t_rect rect)
 {
-    int i;
-    int len;
-    int max_len;
+	int	px;
+	int	py;
+	int	radius;
+	int	x;
+	int	y;
 
-    i = -1;
-    max_len = 0;
-    while (map[++i])
-    {
-        len = ft_strlen(map[i]);
-        if (max_len < len)
-            max_len = len;
-    }
-    return (max_len);
+	px = (int)((game->player.x / TILE_SIZE) * rect.width);
+	py = (int)((game->player.y / TILE_SIZE) * rect.height);
+	radius = (int)(rect.width * 2.5);
+	y = -radius;
+	while (y <= radius)
+	{
+		x = -radius;
+		while (x <= radius)
+		{
+			if (x * x + y * y <= radius * radius)
+				put_pixel(game, px + x, py + y, RED);
+			++x;
+		}
+		++y;
+	}
 }
 
-void map_2d(t_game *game)
+int	ft_max_len(char **map)
 {
-    int scaleX = WINDOW_WIDTH / 2;
-    int scaleY = WINDOW_HEIGHT / 2;
-    int min_w = ft_max_len(game->info.map);
-    int min_h = game->info.height;
-    int scale_size = (scaleX / min_w < scaleY / min_h) ? scaleX / min_w : scaleY / min_h;
-    int color;
-    int row = -1; 
-    while (++row < game->info.height)
-    {
-        int col = -1;
-        while (++col < ft_strlen(game->info.map[row]))
-        {
-            char cell = game->info.map[row][col];
-            if (cell == '1')
-                color = BLACK;
-            else if (cell == '0' || cell == 'O')
-                color = WHITE;
-            else if (cell == 'D')
-                color = YELLOW;
-            draw_map2d(game, col * scale_size,
-                row * scale_size, scale_size, color);
-        }
-    }
-    float player_tile_x = game->player.x / TILE_SIZE;
-    float player_tile_y = game->player.y / TILE_SIZE;
-    int player_x = (int)(player_tile_x * scale_size);
-    int player_y = (int)(player_tile_y * scale_size);
-    draw_circle(game, player_x, player_y, scale_size / 2, RED);
+	int	i;
+	int	len;
+	int	max_len;
+
+	i = -1;
+	max_len = 0;
+	while (map[++i])
+	{
+		len = ft_strlen(map[i]);
+		if (max_len < len)
+			max_len = len;
+	}
+	return (max_len);
 }
 
+void	map_2d(t_game *game)
+{
+	t_rect	rect;
+	int		col;
+	int		row;
+	char	cell;
+
+	rect.width = (float)WINDOW_WIDTH / ft_max_len(game->info.map) / 6;
+	rect.height = (float)WINDOW_HEIGHT / game->info.height / 6;
+	col = -1;
+	while (++col < game->info.height)
+	{
+		row = -1;
+		while (++row < ft_strlen(game->info.map[col]))
+		{
+			cell = game->info.map[col][row];
+			rect.x = (int)(row * rect.width);
+			rect.y = (int)(col * rect.height);
+			cell_color(game, &rect, cell);
+		}
+	}
+	draw_circle(game, rect);
+}

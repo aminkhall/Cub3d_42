@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:49:58 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/29 19:26:22 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/09 15:44:04 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,98 +50,6 @@ int	is_wall(float x, float y, t_game *game)
 	return (c != '0' && c != 'O'); // wall or closed door
 }
 
-int	is_do(float x, float y, t_game *game)
-{
-	int		mapX;
-	int		mapY;
-	char	c;
-
-	float padding = 5; // in pixels or fraction of tile
-	mapX = (int)((x + padding) / game->tile_size);
-	mapY = (int)((y + padding) / game->tile_size);
-	if (mapX < 0 || mapX >= game->map_width || mapY < 0
-		|| mapY >= game->map_height)
-		return (0);
-	c = game->info.map[mapY][mapX];
-	return (c == 'D' || c == 'O');
-}
-
-void	open_door(t_game *game)
-{
-	t_player	*p;
-	float		checkX;
-	float		checkY;
-	int			mapX;
-	int			mapY;
-
-	p = &game->player;
-	// Look 1/2 tile forward
-	checkX = p->x + cos(p->rotationAngle) * (game->tile_size);
-	checkY = p->y + sin(p->rotationAngle) * (game->tile_size);
-	mapX = (int)(checkX / game->tile_size);
-	mapY = (int)(checkY / game->tile_size);
-	if (mapX < 0 || mapX >= game->map_width || mapY < 0
-		|| mapY >= game->map_height)
-		return ;
-	if (game->info.map[mapY][mapX] == 'D')
-		game->info.map[mapY][mapX] = 'O';
-	else if (game->info.map[mapY][mapX] == 'O')
-		game->info.map[mapY][mapX] = 'D';
-}
-
-void	draw_sprite_centered(t_game *game, t_texture *tex)
-{
-	int	sprite_width;
-	int	sprite_height;
-	int	start_x;
-	int	start_y;
-	int	screen_x;
-	int	screen_y;
-	int	color;
-
-	sprite_width = tex->width / 2;
-	sprite_height = (tex->height);
-	start_x = (WINDOW_WIDTH / 3);
-	start_y = (WINDOW_HEIGHT)-tex->height;
-	for (int x = 0; x < sprite_width * 2; x++)
-	{
-		screen_x = start_x + x;
-		if (screen_x < 0 || screen_x >= WINDOW_WIDTH)
-			continue ;
-		for (int y = 0; y < sprite_height * 2; y++)
-		{
-			screen_y = start_y + y;
-			if (screen_y < 0 || screen_y >= WINDOW_HEIGHT)
-				continue ;
-			color = get_tex_color(tex, x, y);
-			if ((color & 0x00FFFFFF) != 0)
-				put_pixel(game, screen_x, screen_y, color);
-		}
-	}
-}
-
-void	animation(t_game *game)
-{
-	t_texture	*tex;
-	int			i;
-
-	if (!game->anim_val)
-	{
-		tex = &game->textures[5];
-		draw_sprite_centered(game, tex);
-	}
-	else
-	{
-		i = 6;
-		while (i < 9)
-		{
-			tex = &game->textures[i];
-			draw_sprite_centered(game, tex);
-			++i;
-		}
-	}
-}
-
 void	update_player(t_game *game)
 {
 	t_player	*p;
@@ -171,7 +79,11 @@ void	update_player(t_game *game)
 int	handle_input(int key, t_game *game)
 {
 	if (key == KEY_ESC)
+	{
+		ft_clean(&game->info);
+		free_txt(&game->info);
 		exit(0);
+	}
 	if (key == KEY_W)
 		game->player.walkDirection = +1;
 	else if (key == KEY_S)
@@ -204,264 +116,7 @@ int	release_input(int key, t_game *game)
 	return (0);
 }
 
-int	mouse_hook(int x, int y, t_game *game)
-{
-	static int	last_x = -1;
-	int			dx;
 
-	if (last_x == -1)
-	{
-		last_x = x;
-		return (0);
-	}
-	if (x >= 0 && x <= WINDOW_WIDTH && y >= 0 && y <= WINDOW_HEIGHT)
-	{
-		dx = x - last_x;
-		if (dx < 0)
-			game->player.turnDirection = -3;
-		else if (dx > 0)
-			game->player.turnDirection = 3;
-		else
-			game->player.turnDirection = 0;
-		last_x = x;
-	}
-	else
-		game->player.turnDirection = 0;
-	return (0);
-}
-int	check_wall(t_game *game, int mapX, int mapY)
-{
-	char	cell;
-
-	cell = game->info.map[mapY][mapX];
-	if (cell != '0' && cell != 'O')
-		return (1);
-	return (0);
-}
-
-void	check_sides(t_game *game, t_ray *ray)
-{
-	while (!check_wall(game, game->mapX, game->mapY))
-	{
-		if (game->sideDistX < game->sideDistY)
-		{
-			game->sideDistX += game->deltaDistX;
-			game->mapX += game->stepX;
-			if ((game->stepX > 0))
-				ray->side = 'e';
-			else
-				ray->side = 'w';
-		}
-		else
-		{
-			game->sideDistY += game->deltaDistY;
-			game->mapY += game->stepY;
-			if ((game->stepY > 0))
-				ray->side = 's';
-			else
-				ray->side = 'n';
-		}
-	}
-	ray->door = (game->info.map[game->mapY][game->mapX] == 'D'
-			|| game->info.map[game->mapY][game->mapX] == 'O');
-}
-
-void	grid_distance(t_game *game, t_ray *ray, float ray_angle)
-{
-	if (cos(ray_angle) < 0)
-		game->stepX = -1;
-	else
-		game->stepX = 1;
-	if (sin(ray_angle) < 0)
-		game->stepY = -1;
-	else
-		game->stepY = 1;
-	if (game->stepX > 0)
-		game->sideDistX = ((game->mapX + 1) * game->tile_size - game->player.x)
-			* game->deltaDistX / game->tile_size;
-	else
-		game->sideDistX = (game->player.x - game->mapX * game->tile_size)
-			* game->deltaDistX / game->tile_size;
-	if (game->stepY > 0)
-		game->sideDistY = ((game->mapY + 1) * game->tile_size - game->player.y)
-			* game->deltaDistY / game->tile_size;
-	else
-		game->sideDistY = (game->player.y - game->mapY * game->tile_size)
-			* game->deltaDistY / game->tile_size;
-	check_sides(game, ray);
-}
-void	hit_point(t_game *game, t_ray *ray, float ray_angle)
-{
-	float	relative_angle;
-
-	float hitX, hitY;
-	if (ray->side == 'e' || ray->side == 'w')
-	{
-		hitX = game->player.x + cos(ray_angle) * (game->sideDistX
-				- game->deltaDistX);
-		hitY = game->player.y + sin(ray_angle) * (game->sideDistX
-				- game->deltaDistX);
-	}
-	else
-	{
-		hitX = game->player.x + cos(ray_angle) * (game->sideDistY
-				- game->deltaDistY);
-		hitY = game->player.y + sin(ray_angle) * (game->sideDistY
-				- game->deltaDistY);
-	}
-	ray->x = hitX;
-	ray->y = hitY;
-	relative_angle = ray_angle - game->player.rotationAngle;
-	relative_angle = fmodf(relative_angle + PI, TWO_PI) - PI;
-	ray->distance = sqrt((hitX - game->player.x) * (hitX - game->player.x)
-			+ (hitY - game->player.y) * (hitY - game->player.y));
-	ray->distance *= cos(relative_angle);
-}
-
-void	render_ray(t_game *game, float ray_angle, int i)
-{
-	float	relative_angle;
-	t_ray	*ray;
-
-	ray = &game->rays[i];
-	game->mapX = (int)(game->player.x / game->tile_size);
-	game->mapY = (int)(game->player.y / game->tile_size);
-	game->deltaDistX = fabs(1 / cos(ray_angle)) * game->tile_size;
-	game->deltaDistY = fabs(1 / sin(ray_angle)) * game->tile_size;
-	grid_distance(game, ray, ray_angle);
-	hit_point(game, ray, ray_angle);
-}
-
-void	render_rays(t_game *game)
-{
-	float	start_angle;
-	float	angle_step;
-	float	ray_angle;
-	int		i;
-
-	start_angle = game->player.rotationAngle - (FOV_ANGLE / 2);
-	angle_step = FOV_ANGLE / (NUM_RAYS);
-	i = 0;
-	while (i < NUM_RAYS)
-	{
-		ray_angle = start_angle + i * angle_step;
-		render_ray(game, ray_angle, i);
-		i++;
-	}
-}
-
-void	render_map(t_game *game, float wall_height, int i)
-{
-	t_ray		*ray;
-	t_texture	*tex;
-	int			screen_x0;
-	int			screen_x1;
-	int			top;
-	int			bottom;
-	float		tex_x;
-	float		tex_step;
-	float		tex_pos;
-	int			x;
-	int			y;
-	float		tex_y_pos;
-	int			tex_y;
-	int			color;
-
-	ray = &game->rays[i];
-	screen_x0 = (i * WINDOW_WIDTH) / NUM_RAYS;
-	screen_x1 = ((i + 1) * WINDOW_WIDTH) / NUM_RAYS;
-	if (screen_x1 <= screen_x0)
-		screen_x1 = screen_x0 + 1;
-	if (screen_x0 < 0)
-		screen_x0 = 0;
-	if (screen_x1 > WINDOW_WIDTH)
-		screen_x1 = WINDOW_WIDTH;
-	top = (int)(WINDOW_HEIGHT / 2 - wall_height / 2);
-	bottom = (int)(WINDOW_HEIGHT / 2 + wall_height / 2);
-	if (top < 0)
-		top = 0;
-	if (bottom > WINDOW_HEIGHT)
-		bottom = WINDOW_HEIGHT;
-	if (ray->door)
-		tex = &game->textures[4];
-	else if (ray->side == 'n')
-		tex = &game->textures[0];
-	else if (ray->side == 's')
-		tex = &game->textures[1];
-	else if (ray->side == 'e')
-		tex = &game->textures[2];
-	else
-		tex = &game->textures[3];
-	if (ray->side == 'n' || ray->side == 's')
-		tex_x = fmodf(ray->x, game->tile_size) / game->tile_size * tex->width;
-	else
-		tex_x = fmodf(ray->y, game->tile_size) / game->tile_size * tex->width;
-	if (tex_x < 0)
-		tex_x += tex->width;
-	tex_step = (float)tex->height / wall_height;
-	tex_pos = (top - WINDOW_HEIGHT / 2 + wall_height / 2) * tex_step;
-	x = screen_x0;
-	while (x < screen_x1)
-	{
-		y = top;
-		tex_y_pos = tex_pos;
-		while (y < bottom)
-		{
-			tex_y = (int)tex_y_pos;
-			if (tex_y < 0)
-				tex_y = 0;
-			if (tex_y >= tex->height)
-				tex_y = tex->height - 1;
-			color = get_tex_color(tex, (int)tex_x, tex_y);
-			put_pixel(game, x, y, color);
-			tex_y_pos += tex_step;
-			y++;
-		}
-		x++;
-	}
-}
-
-void	map_3d(t_game *game)
-{
-	int		ceil_color;
-	int		floor_color;
-	int		x;
-	int		i;
-	int		y;
-	float	proj_dist;
-	float	dist;
-	float	wall_height;
-
-	ceil_color = rgb_to_int(game->info.cceiling[0], game->info.cceiling[1],
-			game->info.cceiling[2]);
-	floor_color = rgb_to_int(game->info.cfloor[0], game->info.cfloor[1],
-			game->info.cfloor[2]);
-	x = 0;
-	while (x < WINDOW_WIDTH)
-	{
-		y = 0;
-		while (y < WINDOW_HEIGHT)
-		{
-			put_pixel(game, x, y, (y < WINDOW_HEIGHT
-					/ 2) ? ceil_color : floor_color);
-			y++;
-		}
-		x++;
-	}
-	proj_dist = (WINDOW_WIDTH / 2) / tanf(FOV_ANGLE / 2);
-	i = 0;
-	while (i < NUM_RAYS)
-	{
-		dist = game->rays[i].distance;
-		if (dist < 0.1f)
-			dist = 0.1f;
-		wall_height = (game->tile_size / dist) * proj_dist;
-		if (wall_height < 1.0f)
-			wall_height = 1.0f;
-		render_map(game, wall_height, i);
-		i++;
-	}
-}
 
 int	game_loop(t_game *game)
 {
@@ -479,99 +134,6 @@ int	game_loop(t_game *game)
 	return (0);
 }
 
-void	map_dimensions(t_game *game)
-{
-	int	max_width;
-	int	height;
-	int	width;
-
-	height = 0;
-	max_width = 0;
-	while (game->info.map[height])
-	{
-		width = ft_strlen(game->info.map[height]);
-		if (width > max_width)
-			max_width = width;
-		height++;
-	}
-	game->map_width = max_width;
-	game->map_height = height;
-}
-
-void	init_textures(t_game *game)
-{
-	char	*path[9];
-	int		i;
-
-	i = 0;
-	path[0] = game->info.north;
-	path[1] = game->info.south;
-	path[2] = game->info.east;
-	path[3] = game->info.west;
-	path[4] = game->info.door;
-	path[5] = game->info.anim[0];
-	path[6] = game->info.anim[1];
-	path[7] = game->info.anim[2];
-	path[8] = game->info.anim[3];
-	while (i < 9)
-	{
-		game->textures[i].img = mlx_xpm_file_to_image(game->mlx, path[i],
-				&game->textures[i].width, &game->textures[i].height);
-		if (!game->textures[i].img)
-		{
-			printf("Error: Failed to load texture %s\n", path[i]);
-			exit(1);
-		}
-		game->textures[i].addr = mlx_get_data_addr(game->textures[i].img,
-				&game->textures[i].bpp, &game->textures[i].line_len,
-				&game->textures[i].endian);
-		i++;
-	}
-}
-void	player_pos(t_game *game)
-{
-	int		y;
-	int		x;
-	char	c;
-
-	y = 0;
-	while (game->info.map[y])
-	{
-		x = 0;
-		while (game->info.map[y][x])
-		{
-			c = game->info.map[y][x];
-			if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
-			{
-				game->player.x = (x + 0.5f) * game->tile_size;
-				game->player.y = (y + 0.5f) * game->tile_size;
-				if (c == 'N')
-					game->player.rotationAngle = -PI / 2;
-				if (c == 'S')
-					game->player.rotationAngle = PI / 2;
-				if (c == 'E')
-					game->player.rotationAngle = 0;
-				if (c == 'W')
-					game->player.rotationAngle = PI;
-				game->info.map[y][x] = '0';
-				return ;
-			}
-			x++;
-		}
-		y++;
-	}
-}
-
-void	initialize(t_game *game)
-{
-	game->tile_size = TILE_SIZE;
-	game->player.walkSpeed = 5;
-	game->player.turnSpeed = 0.1f;
-	map_dimensions(game);
-	init_textures(game);
-	player_pos(game);
-}
-
 int	main(int ac, char **av)
 {
 	t_game game;
@@ -582,15 +144,15 @@ int	main(int ac, char **av)
 	if (!valid_filename(av[1]))
 		return (1);
 	if (!parsing(av[1], &game.info))
-		return (1);
+		return (ft_clean(&game.info), 1);
 	game.mlx = mlx_init();
 	game.win = mlx_new_window(game.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub");
 	initialize(&game);
-
 	mlx_hook(game.win, ON_MOUSEMOVE, 1L << 6, mouse_hook, &game);
 	mlx_hook(game.win, 2, 1L << 0, handle_input, &game);
 	mlx_hook(game.win, 3, 1L << 1, release_input, &game);
 	mlx_loop_hook(game.mlx, game_loop, &game);
 	mlx_loop(game.mlx);
+	// ft_clean(&game.info);
 	return (0);
 }

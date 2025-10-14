@@ -5,12 +5,16 @@ HEADER     =    cub3d_bonus.h
 # CFLAGS =  -fsanitize=address -g3 #-Wall -Wextra -Werror
 # MLXFLAGS = #-lmlx -framework OpenGL -framework AppKit
 MLX_DIR = minilibx-linux
-CFLAGS =  -I$(MLX_DIR)   #-fsanitize=address -g3
+CFLAGS =  -I$(MLX_DIR) 
 MLXFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 
 SRCS = 	main_bonus.c \
+		raysrendring.c\
+		3dmap.c \
 		minimap.c \
 		init.c \
+		door_mouse_bonus.c \
+		animation_bonuc.c \
 		./Parsing/get_next_line_bonus.c \
 		./Parsing/get_next_line_utils_bonus.c \
 		./Parsing/parse_color_bonus.c \

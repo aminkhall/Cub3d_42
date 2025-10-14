@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:50:06 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/09/29 18:37:09 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/07 17:24:20 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@
 #define NUM_RAYS 1240
 #define FOV (60 * (PI / 180)) 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 1
 # endif
 
 
@@ -134,6 +134,14 @@ typedef struct s_game {
     int         tile_size;
     int         screen_x0;
     int         screen_x1;
+        int mapX;
+    int mapY;
+    int stepX;
+    int stepY;
+    float sideDistX;
+    float sideDistY;
+    float deltaDistX;
+    float deltaDistY;
     t_player    player;
     t_info      info;
     t_ray       rays[NUM_RAYS];

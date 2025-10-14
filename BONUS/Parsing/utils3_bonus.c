@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:13:14 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/09/29 19:15:19 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/09 19:26:08 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	check_space(char **map, char dirc)
 		j = -1;
 		while (map[i][++j])
 		{
-			if (map[i][j] == '0' || map[i][j] == dirc)
+			if (map[i][j] == '0' || map[i][j] == dirc || map[i][j] == 'D')
 			{
 				if (ft_strlen(map[i - 1]) >= j && map[i - 1][j] == ' ')
 					return (0);
@@ -82,4 +82,13 @@ int	check_space(char **map, char dirc)
 		}
 	}
 	return (1);
+}
+
+void	free_txt(t_info *info)
+{
+	free(info->anim[0]);
+	free(info->anim[1]);
+	free(info->anim[2]);
+	free(info->anim[3]);
+	free(info->door);
 }

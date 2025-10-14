@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/09/29 19:22:35 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/07 15:42:42 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	parsing(char *filename, t_info *info)
 	line = NULL;
 	info->fd = open(filename, O_RDONLY);
 	if (info->fd < 0)
-		return (printf("File dosen't found\n"), 0);
+		return (printf("File not found\n"), 0);
 	while (1)
 	{
 		line = get_next_line(info->fd);
