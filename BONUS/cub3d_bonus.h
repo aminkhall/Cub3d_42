@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aymisbah <aymisbah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:50:06 by aymisbah          #+#    #+#             */
-/*   Updated: 2025/10/14 15:36:46 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/27 12:54:20 by aymisbah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,15 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-// # include <mlx.h>
 # include "minilibx-linux/mlx.h"
 # include <fcntl.h>
 # include <limits.h>
 
-// #define PI 3.14159265
 # define PI 3.14159265358979323846
 
 # define TWO_PI 6.28318530
 
 # define TILE_SIZE 32
-# define MINIMAP_SCALE 0.12f
-
-# define MINIMAP_WIDTH (WINDOW_WIDTH * MINIMAP_SCALE)
-# define MINIMAP_HEIGHT (WINDOW_HEIGHT * MINIMAP_SCALE)
 
 # define ROWS 20
 # define COLMS 20
@@ -39,9 +33,6 @@
 # define WINDOW_WIDTH 1240
 # define WINDOW_HEIGHT 1240
 
-# define FOV_ANGLE (60 * (PI / 180))
-
-// #define KEY_ESC    53
 # define KEY_W 'w'
 # define KEY_S 's'
 # define KEY_A 'a'
@@ -49,20 +40,7 @@
 # define KEY_E 'e'
 # define KEY_SPACE ' '
 # define ON_MOUSEMOVE 6
-/////////////// Mac
-// #define KEY_W   13
-// #define KEY_A   0
-// #define KEY_S   1
-// #define KEY_D   2
-// #define KEY_SPACE 49
 
-// #define KEY_LEFT   123
-/// mac
-// #define KEY_ESC    53
-// #define KEY_LEFT   123
-// #define KEY_RIGHT  124
-
-//////// linux
 # define KEY_ESC 65307
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
@@ -74,12 +52,11 @@
 # define BLUE 0x0000FF
 
 # define NUM_RAYS 1240
-# define FOV (60 * (PI / 180))
+
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1
 # endif
 
-// Parsing Struct
 typedef struct s_info
 {
 	char		**map;
@@ -127,12 +104,12 @@ typedef struct s_player
 	float		y;
 	float		width;
 	float		height;
-	int			turnDirection;
-	int			walkDirection;
-	float		rotationAngle;
-	float		walkSpeed;
-	float		strafeDirection;
-	float		turnSpeed;
+	int			trn_dr;
+	int			ud_dr;
+	float		rotat_ang;
+	float		speed_w;
+	float		ad_dr;
+	float		speed_t;
 }				t_player;
 
 typedef struct s_ray
@@ -159,7 +136,7 @@ typedef struct s_texture
 	int			line_len;
 	int			endian;
 	int			top;
-	int			bottom;
+	int			down;
 	float		tex_pos;
 	float		tex_step;
 }				t_texture;
@@ -175,20 +152,21 @@ typedef struct s_game
 	int			bpp;
 	int			line_len;
 	int			endian;
-	int			map_height;
-	int			map_width;
-	int			tile_size;
+	int			m_ht;
+	int			m_wd;
+	int			t_size;
 	int			anim_val;
-	int			mapX;
-	int			mapY;
-	int			stepX;
-	int			stepY;
-	float		sideDistX;
-	float		sideDistY;
-	float		deltaDistX;
-	float		deltaDistY;
+	int			i_x;
+	int			i_y;
+	int			angle_x;
+	int			angle_y;
+	float		pd_x;
+	float		pd_y;
+	float		cd_x;
+	float		cd_y;
 	int			e_col;
 	int			s_col;
+	float		fov;
 	t_player	player;
 	t_info		info;
 	t_ray		rays[NUM_RAYS];
@@ -222,7 +200,6 @@ int				check_map(t_info *info, int height);
 int				count_direction(char **str, char *dirc);
 void			parse_map(char *str, t_info *info);
 int				is_texter(char *str);
-int				check_texter(t_info *info);
 void			parse_texter(char *str, t_info *info);
 void			error_handler(char *str, t_info *info);
 int				check_space(char **info, char dirc);
@@ -235,6 +212,16 @@ int				get_tex_color(t_texture *tex, int x, int y);
 int				rgb_to_int(int r, int g, int b);
 void			animation(t_game *game);
 int				mouse_hook(int x, int y, t_game *game);
+int				handle_input(int key, t_game *game);
+int				release_input(int key, t_game *game);
+void			update_player(t_game *game);
+void			init_textures(t_game *game);
+void			assign_path(t_game *game, char *path[9]);
+void			render_ray(t_game *game, float curr_a, int i);
+void			render_map(t_game *game, float height_w, int i);
+void			c_f_colors(t_game *game);
 void			open_door(t_game *game);
 void			free_txt(t_info *info);
+void			close_pr(t_game *game);
+void			show_user_info(void);
 #endif

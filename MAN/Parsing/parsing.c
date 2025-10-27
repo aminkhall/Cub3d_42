@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:11:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/09/29 19:22:08 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/19 16:24:40 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	valid_input(t_info *info)
 		|| info->n_cceiling != 1 || info->n_cfloor != 1 || !info->east
 		|| !info->north || !info->south || !info->west
 		|| !check_space(info->map, info->direc))
-		error_handler("Invalid input", info);
+		error_handler("*   Invalid Input   *", info);
 	close(info->fd);
 	change_space(info->map);
 }
@@ -30,7 +30,7 @@ int	parsing(char *filename, t_info *info)
 
 	info->fd = open(filename, O_RDONLY);
 	if (info->fd < 0)
-		return (printf("File dosen't found"), 0);
+		return (printf("*   File Not Found!     *\n"), 0);
 	while (1)
 	{
 		line = get_next_line(info->fd);
@@ -43,9 +43,9 @@ int	parsing(char *filename, t_info *info)
 		else if (*line && is_map(line))
 			parse_map(line, info);
 		else if (!(*line) && (info->map))
-			(free(line), error_handler("Invalid input", info));
+			(free(line), error_handler("*   Invalid Input   *", info));
 		else if (*line)
-			(free(line), error_handler("Invalid input", info));
+			(free(line), error_handler("*   Invalid Input   *", info));
 		free(line);
 	}
 	valid_input(info);
@@ -65,5 +65,6 @@ int	valid_filename(char *str)
 		--i;
 	if (!ft_strncmp(str + i, ".cub", 5))
 		return (1);
+	printf("*   Invalid Filename!       *\n");
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mkhallou <mkhallou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 20:14:06 by mkhallou          #+#    #+#             */
-/*   Updated: 2025/10/07 17:27:33 by mkhallou         ###   ########.fr       */
+/*   Updated: 2025/10/18 19:15:33 by mkhallou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,5 @@ char	*get_next_line(int fd)
 		return (NULL);
 	line = extract_line(tmp);
 	tmp = trim_to_next_line(tmp);
-	return (free(tmp), line);
+	return (free_str(&tmp), line);
 }

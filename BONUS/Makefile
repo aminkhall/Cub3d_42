@@ -2,17 +2,19 @@ NAME = cub3d_bonus
 CC = cc
 
 HEADER     =    cub3d_bonus.h
-# CFLAGS =  -fsanitize=address -g3 #-Wall -Wextra -Werror
-# MLXFLAGS = #-lmlx -framework OpenGL -framework AppKit
+
 MLX_DIR = minilibx-linux
-CFLAGS =  -I$(MLX_DIR) 
+
+CFLAGS =  -I$(MLX_DIR)  -Wall -Wextra -Werror
 MLXFLAGS = -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 
 SRCS = 	main_bonus.c \
-		raysrendring.c\
-		3dmap.c \
-		minimap.c \
-		init.c \
+		raysrendring_bonus.c\
+		3dmap_bonus.c \
+		minimap_bonus.c \
+		init_bonus.c \
+		player_bonus.c \
+		utils_bonus.c \
 		door_mouse_bonus.c \
 		animation_bonuc.c \
 		./Parsing/get_next_line_bonus.c \
